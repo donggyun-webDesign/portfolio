@@ -103,7 +103,6 @@
             display: block; color: #fff; font-size: 12px; letter-spacing: 0.35em; text-transform: uppercase; font-weight: 700; 
             padding: 18px 60px; border: 1px solid rgba(255, 255, 255, 0.4); backdrop-filter: blur(15px); 
             background: rgba(255, 255, 255, 0.15); text-decoration: none; transition: 0.4s;
-            pointer-events: auto; /* 클릭 가능하도록 명시 */
         }
         .menu-link:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
@@ -226,8 +225,8 @@
 
     <script>
         let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
-        let targetX = 0, currentX = 0, isDown = false, xVelocity = 0;
-        let startMouseX = 0, startMouseY = 0; // 클릭 판별용
+        let targetX = 0, currentX = 0, isDown = false;
+        let startX = 0, startY = 0, isDragging = false; 
         let targetY = 0, currentY = 0;
 
         const lerp = (a, b, n) => (1 - n) * a + n * b;
@@ -237,17 +236,14 @@
         const pagination = document.getElementById('pagination');
         const items = document.querySelectorAll('.project-item');
 
-        // Pagination Dots 생성
         items.forEach((_, i) => { const d = document.createElement('div'); d.className = 'dot' + (i===0?' active':''); pagination.appendChild(d); });
         const dots = document.querySelectorAll('.dot');
 
         function animate() {
             currentX = lerp(currentX, targetX, 0.08);
             sliderInner.style.transform = `translateX(${-currentX}px)`;
-
             currentY = lerp(currentY, targetY, 0.08);
             sidebarScroll.style.transform = `translateY(${-currentY}px)`;
-
             followerX = lerp(followerX, mouseX, 0.1); followerY = lerp(followerY, mouseY, 0.1);
             dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
             follower.style.left = followerX + 'px'; follower.style.top = followerY + 'px';
@@ -256,18 +252,19 @@
                 const img = item.querySelector('.project-img');
                 const offset = (i * 1050) - currentX;
                 img.style.transform = `translateX(${offset * 0.1}px) scale(1.1)`;
-                
                 const activeIndex = Math.round(currentX / 1050);
                 dots.forEach((d, idx) => d.classList.toggle('active', idx === activeIndex));
             });
-
             requestAnimationFrame(animate);
         }
 
         window.addEventListener('mousemove', e => { 
-            mouseX = e.clientX; 
-            mouseY = e.clientY; 
+            mouseX = e.clientX; mouseY = e.clientY; 
             if(isDown) {
+                const moveX = Math.abs(e.clientX - startX);
+                const moveY = Math.abs(e.clientY - startY);
+                if (moveX > 5 || moveY > 5) isDragging = true; // 5px 이상 움직이면 드래그로 간주
+
                 targetX -= (e.movementX * 1.5);
                 targetX = Math.max(0, Math.min(targetX, sliderInner.scrollWidth - window.innerWidth + 440));
             }
@@ -275,24 +272,22 @@
 
         window.addEventListener('mousedown', (e) => {
             isDown = true;
-            startMouseX = e.clientX;
-            startMouseY = e.clientY;
+            isDragging = false; // 마우스 누를 때 초기화
+            startX = e.clientX;
+            startY = e.clientY;
         });
 
-        window.addEventListener('mouseup', (e) => {
+        window.addEventListener('mouseup', () => {
             isDown = false;
-            
-            // 드래그가 아니라 단순 클릭인지 판별 (이동 거리가 5px 미만이면 클릭)
-            const diffX = Math.abs(e.clientX - startMouseX);
-            const diffY = Math.abs(e.clientY - startMouseY);
-
-            if(diffX < 5 && diffY < 5) {
-                const link = e.target.closest('a');
-                if(link) {
-                    window.open(link.href, link.target || '_self');
-                }
-            }
         });
+
+        // 핵심: 드래그 중이었다면 클릭(이동)을 막는다
+        window.addEventListener('click', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, true); // Capture 단계에서 가로챔
 
         window.addEventListener('wheel', e => { 
             if(e.clientX < 440) targetY = Math.max(0, Math.min(targetY + e.deltaY, sidebarScroll.scrollHeight - window.innerHeight));
