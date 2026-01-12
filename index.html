@@ -87,19 +87,24 @@
         /* --- Slider Layout --- */
         .main-content { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; }
         .slider-inner { display: flex; align-items: center; height: 100%; padding-left: calc(var(--sidebar-width) + 120px); will-change: transform; }
-        .project-item { flex-shrink: 0; width: 800px; margin-right: 250px; position: relative; will-change: transform; padding-bottom: 100px; }
+        .project-item { flex-shrink: 0; width: 800px; margin-right: 250px; position: relative; padding-bottom: 100px; }
         
         .project-image-wrap { 
             width: 100%; aspect-ratio: 16/9; overflow: hidden; position: relative; background: #010204; 
             box-shadow: 0 80px 160px rgba(0,0,0,0.8);
         }
 
-        .project-img { width: 150%; height: 100%; background-size: cover; background-position: center; position: absolute; top: 0; left: -25%; transition: 0.8s ease; will-change: transform; }
+        .project-img { width: 150%; height: 100%; background-size: cover; background-position: center; position: absolute; top: 0; left: -25%; transition: 0.8s ease; will-change: transform; pointer-events: none; }
         .project-item:hover .project-img { filter: brightness(0.4); transform: scale(1.05); }
 
-        .project-menu { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; opacity: 0; transition: 0.6s; z-index: 10; }
+        .project-menu { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; opacity: 0; transition: 0.6s; z-index: 20; }
         .project-item:hover .project-menu { opacity: 1; }
-        .menu-link { display: block; color: #fff; font-size: 12px; letter-spacing: 0.35em; text-transform: uppercase; font-weight: 700; padding: 18px 60px; border: 1px solid rgba(255, 255, 255, 0.4); backdrop-filter: blur(15px); background: rgba(255, 255, 255, 0.15); text-decoration: none; transition: 0.4s; }
+        .menu-link { 
+            display: block; color: #fff; font-size: 12px; letter-spacing: 0.35em; text-transform: uppercase; font-weight: 700; 
+            padding: 18px 60px; border: 1px solid rgba(255, 255, 255, 0.4); backdrop-filter: blur(15px); 
+            background: rgba(255, 255, 255, 0.15); text-decoration: none; transition: 0.4s;
+            pointer-events: auto; /* 클릭 가능하도록 명시 */
+        }
         .menu-link:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
         .project-meta { margin-top: 45px; display: flex; justify-content: space-between; align-items: flex-end; }
@@ -221,7 +226,8 @@
 
     <script>
         let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
-        let targetX = 0, currentX = 0, isDown = false, startX, xVelocity = 0;
+        let targetX = 0, currentX = 0, isDown = false, xVelocity = 0;
+        let startMouseX = 0, startMouseY = 0; // 클릭 판별용
         let targetY = 0, currentY = 0;
 
         const lerp = (a, b, n) => (1 - n) * a + n * b;
@@ -236,20 +242,16 @@
         const dots = document.querySelectorAll('.dot');
 
         function animate() {
-            // Horizontal Slider
             currentX = lerp(currentX, targetX, 0.08);
             sliderInner.style.transform = `translateX(${-currentX}px)`;
 
-            // Sidebar Vertical Scroll
             currentY = lerp(currentY, targetY, 0.08);
             sidebarScroll.style.transform = `translateY(${-currentY}px)`;
 
-            // Cursor
             followerX = lerp(followerX, mouseX, 0.1); followerY = lerp(followerY, mouseY, 0.1);
             dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
             follower.style.left = followerX + 'px'; follower.style.top = followerY + 'px';
 
-            // Parallax & Skew
             items.forEach((item, i) => {
                 const img = item.querySelector('.project-img');
                 const offset = (i * 1050) - currentX;
@@ -262,9 +264,36 @@
             requestAnimationFrame(animate);
         }
 
-        window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; if(isDown) targetX -= (e.movementX * 1.5); });
-        window.addEventListener('mousedown', () => isDown = true);
-        window.addEventListener('mouseup', () => isDown = false);
+        window.addEventListener('mousemove', e => { 
+            mouseX = e.clientX; 
+            mouseY = e.clientY; 
+            if(isDown) {
+                targetX -= (e.movementX * 1.5);
+                targetX = Math.max(0, Math.min(targetX, sliderInner.scrollWidth - window.innerWidth + 440));
+            }
+        });
+
+        window.addEventListener('mousedown', (e) => {
+            isDown = true;
+            startMouseX = e.clientX;
+            startMouseY = e.clientY;
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            isDown = false;
+            
+            // 드래그가 아니라 단순 클릭인지 판별 (이동 거리가 5px 미만이면 클릭)
+            const diffX = Math.abs(e.clientX - startMouseX);
+            const diffY = Math.abs(e.clientY - startMouseY);
+
+            if(diffX < 5 && diffY < 5) {
+                const link = e.target.closest('a');
+                if(link) {
+                    window.open(link.href, link.target || '_self');
+                }
+            }
+        });
+
         window.addEventListener('wheel', e => { 
             if(e.clientX < 440) targetY = Math.max(0, Math.min(targetY + e.deltaY, sidebarScroll.scrollHeight - window.innerHeight));
             else targetX = Math.max(0, Math.min(targetX + e.deltaY, sliderInner.scrollWidth - window.innerWidth + 440));
