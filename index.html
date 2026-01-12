@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Han Dong Gyun | Portfolio </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #010204; 
+            --fg: #eef2f5;
+            --sub: #8a99a8;
+            --accent: #A5D7E8; 
+            --sidebar-width: 440px;
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 전체 폰트 강제 적용 (Pretendard 우선순위) */
+        * {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif !important;
+        }
+
+        /* 세리프 폰트만 예외 적용 */
+        .serif, .serif * { 
+            font-family: 'Cormorant Garamond', serif !important; 
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--fg);
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.1; 
+            pointer-events: none;
+            z-index: 500;
+            mix-blend-mode: soft-light;
+        }
+
+        /* --- 앰비언트 메시 배경 (v10.0 무드 유지) --- */
+        .ambient-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; background: #010204; overflow: hidden; }
+        .ambient-bg::after { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 25vh; background: linear-gradient(to top, #010204 40%, transparent 100%); z-index: 5; pointer-events: none; }
+        .mesh-container { position: absolute; width: 100%; height: 100%; filter: blur(120px); }
+        .mesh-blob { position: absolute; border-radius: 50%; will-change: transform; mix-blend-mode: screen; opacity: 0.35; }
+        .blob-1 { width: 90vw; height: 90vw; background: radial-gradient(circle, rgba(165, 215, 232, 0.25) 0%, transparent 70%); top: -30%; left: -10%; animation: move-1 25s infinite alternate ease-in-out; }
+        .blob-2 { width: 80vw; height: 80vw; background: radial-gradient(circle, rgba(30, 60, 120, 0.2) 0%, transparent 70%); bottom: -20%; right: -15%; animation: move-2 35s infinite alternate ease-in-out; }
+        .blob-3 { width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(165, 215, 232, 0.1) 0%, transparent 70%); top: 20%; left: 10%; animation: move-3 30s infinite alternate ease-in-out; }
+
+        @keyframes move-1 { 0% { transform: translate(0, 0) scale(1) rotate(0deg); } 50% { transform: translate(20%, 15%) scale(1.2) rotate(120deg); } 100% { transform: translate(-10%, 10%) scale(0.8) rotate(-60deg); } }
+        @keyframes move-2 { 0% { transform: translate(0, 0) scale(1) rotate(0deg); } 50% { transform: translate(-20%, -15%) scale(0.8) rotate(-90deg); } 100% { transform: translate(15%, 5%) scale(1.1) rotate(45deg); } }
+        @keyframes move-3 { 0% { transform: translate(0, 0) scale(1.1); } 50% { transform: translate(25%, -10%) scale(0.9); } 100% { transform: translate(-15%, 20%) scale(1.3); } }
+
+        /* --- 사이드바 --- */
+        .sidebar {
+            position: fixed;
+            top: 0; left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            border-right: 1px solid var(--glass-border);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(0, 0, 0, 0.25) 100%); 
+            backdrop-filter: blur(80px) saturate(180%) contrast(110%) brightness(1.1);
+            -webkit-backdrop-filter: blur(80px) saturate(180%) contrast(110%) brightness(1.1);
+            z-index: 200;
+            overflow: hidden;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 10px 0 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar-scroll-content { padding: 100px 60px; display: flex; flex-direction: column; will-change: transform; }
+        .logo { font-size: 18px; font-weight: 800; letter-spacing: 0.5em; margin-bottom: 80px; color: #fff; }
+        .badge { display: inline-block; font-size: 10px; letter-spacing: 0.25em; font-weight: 900; color: var(--accent); border: 1px solid rgba(165, 215, 232, 0.5); padding: 5px 12px; margin-bottom: 40px; text-transform: uppercase; background: rgba(165, 215, 232, 0.1); }
+        .intro h1 { font-size: 40px; line-height: 1.15; margin-bottom: 35px; font-weight: 300; letter-spacing: -0.04em; color: #fff; }
+        .user-name { font-size: 12px; letter-spacing: 0.4em; color: var(--accent); font-weight: 800; margin-bottom: 20px; display: block; text-transform: uppercase; }
+        .intro p { font-size: 14px; color: #fff; line-height: 2; max-width: 320px; word-break: keep-all; margin-bottom: 60px; opacity: 0.8; }
+
+        .sidebar-section { padding-top: 30px; margin-bottom: 30px; border-top: 1px solid rgba(255, 255, 255, 0.15); }
+        .section-title { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: var(--accent); margin-bottom: 20px; }
+        
+        .sidebar-list li { 
+            font-size: 12px; 
+            color: var(--fg); 
+            margin-bottom: 14px; 
+            list-style: none; 
+            transition: all 0.4s; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        /* 왼쪽 사이드 - 왼쪽 글씨 (항목명) */
+        .sidebar-list li span:first-child { 
+            flex: 1; line-height: 1.5; 
+            opacity: 0.7; 
+        }
+
+        /* [가독성 개선] 왼쪽 사이드 - 오른쪽 글씨 (데이터 값) */
+        .sidebar-list li span:last-child { 
+            opacity: 1 !important; 
+            color: #fff !important; 
+            font-size: 11px; 
+            font-weight: 500;
+            white-space: nowrap; 
+            text-align: right;
+            letter-spacing: 0.05em;
+        }
+
+        .sidebar-list li:hover span:first-child { color: var(--accent); opacity: 1; transform: translateX(5px); }
+
+        /* 이메일 폰트 및 스타일 완전 강제 주입 */
+        a.hover-link { 
+            color: inherit !important; 
+            text-decoration: none !important; 
+        }
+
+        .sidebar-footer { font-size: 10px; color: #fff; opacity: 0.3; letter-spacing: 0.2em; text-transform: uppercase; padding-top: 50px; border-top: 1px solid rgba(255, 255, 255, 0.1); flex-shrink: 0; margin-top: auto; }
+
+        /* --- 슬라이더 레이아웃 --- */
+        .main-content { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; }
+        .slider-inner { display: flex; align-items: center; height: 100%; padding-left: calc(var(--sidebar-width) + 120px); padding-right: 150vw; will-change: transform; }
+        .project-item { flex-shrink: 0; width: 800px; margin-right: 250px; position: relative; will-change: transform; padding-bottom: 100px; }
+        
+        .project-image-wrap { 
+            width: 100%; aspect-ratio: 16/9; overflow: hidden; position: relative; background: #010204; 
+            box-shadow: 0 80px 160px rgba(0,0,0,1), inset 0 0 0 3px #010204; 
+            transform-style: preserve-3d; backface-visibility: hidden; clip-path: inset(0.5px);
+        }
+
+        .project-image-wrap::after {
+            content: ""; position: absolute; top: -2px; left: -2px; width: calc(100% + 4px); height: calc(100% + 4px);
+            background: linear-gradient(to top, rgba(1, 2, 4, 1) 0%, rgba(1, 2, 4, 0.85) 20%, rgba(1, 2, 4, 0.25) 60%, transparent 100%);
+            z-index: 2; pointer-events: none;
+        }
+
+        .project-img { width: 150%; height: 100%; background-size: cover; background-position: center; position: absolute; top: 0; left: -25%; filter: grayscale(10%) brightness(1); transition: filter 0.8s ease; will-change: transform; backface-visibility: hidden; }
+        .project-item:hover .project-img { filter: grayscale(0%) brightness(0.6); }
+
+        .project-menu { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; pointer-events: none; z-index: 10; }
+        .menu-link { display: block; color: #fff; font-size: 12px; letter-spacing: 0.35em; text-transform: uppercase; font-weight: 700; padding: 18px 60px; border: 1px solid rgba(255, 255, 255, 0.4); backdrop-filter: blur(15px); background: rgba(255, 255, 255, 0.15); opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); text-decoration: none; pointer-events: auto; }
+        .project-item:hover .menu-link { opacity: 1; transform: translateY(0); }
+        .menu-link:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+        .project-meta { margin-top: 45px; display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 5; }
+        .project-category { font-size: 12px; color: var(--accent); letter-spacing: 0.35em; margin-bottom: 12px; display: block; text-transform: uppercase; font-weight: 800; text-shadow: 0 2px 15px rgba(0,0,0,1); }
+        .project-title { font-size: 64px; font-weight: 400; letter-spacing: -0.01em; line-height: 0.95; color: #fff; text-shadow: 0 10px 50px rgba(0,0,0,1), 0 0 30px rgba(0,0,0,0.8); }
+        .project-year { font-size: 32px; color: #fff; opacity: 0.3; font-family: 'Cormorant Garamond'; font-style: italic; }
+
+        .bg-number { position: absolute; bottom: 0px; right: -40px; font-size: 360px; font-weight: 400; line-height: 0.8; font-family: 'Cormorant Garamond'; font-style: italic; -webkit-text-stroke: 1.2px rgba(165, 215, 232, 0.1); color: transparent; pointer-events: none; z-index: -1; }
+
+        /* 커서 시스템 */
+        .cursor-dot { width: 4px; height: 4px; background: var(--accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; }
+        .cursor-follower { width: 24px; height: 24px; border: 1px solid rgba(165, 215, 232, 0.8); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1), height 0.5s cubic-bezier(0.23, 1, 0.32, 1), background 0.5s, border-color 0.5s; }
+        .cursor-label { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; opacity: 0; transform: scale(0.5); transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+        .cursor-label svg { position: absolute; width: 28px; height: 28px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s; opacity: 0; }
+        .cursor-text { position: absolute; font-size: 7px; font-weight: 900; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; opacity: 0; transition: opacity 0.3s; }
+        body.cursor-scroll .cursor-follower, body.cursor-drag .cursor-follower { width: 68px; height: 68px; border-color: var(--accent); background: rgba(165, 215, 232, 0.1); }
+        body.cursor-scroll .cursor-label, body.cursor-drag .cursor-label { opacity: 1; transform: scale(1); }
+        body.cursor-scroll svg, body.cursor-drag svg { opacity: 1; }
+        body.cursor-drag svg { transform: rotate(90deg); }
+        body.cursor-link .cursor-follower { width: 84px; height: 84px; background: rgba(165, 215, 232, 0.25); border-color: var(--accent); }
+        body.cursor-link .cursor-label { opacity: 1; transform: scale(1); }
+        body.cursor-link svg { opacity: 0; }
+        body.cursor-link .cursor-text { opacity: 1; }
+
+        .pagination-container { position: fixed; bottom: 50px; right: 80px; z-index: 200; }
+        .pagination-dots { display: flex; gap: 20px; }
+        .dot { width: 4px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 50%; transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        .dot.active { background: var(--accent); transform: scale(2.8); box-shadow: 0 0 20px var(--accent); }
+
+    </style>
+</head>
+<body>
+
+    <div class="ambient-bg">
+        <div class="mesh-container">
+            <div class="mesh-blob blob-1"></div>
+            <div class="mesh-blob blob-2"></div>
+            <div class="mesh-blob blob-3"></div>
+        </div>
+    </div>
+
+    <div class="cursor-dot" id="dot"></div>
+    <div class="cursor-follower" id="follower">
+        <div class="cursor-label">
+            <span class="cursor-text">VIEW</span>
+            <svg viewBox="0 0 24 24">
+                <path d="M6 8l6-6 6 6" />
+                <path d="M6 16l6 6 6-6" />
+            </svg>
+        </div>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-scroll-content" id="sidebar-scroll-content">
+            <div class="logo">HAN DONG GYUN</div>
+            <div class="intro">
+                <div class="badge">Portfolio 2026</div>
+                <h1 class="serif italic">Visuals with structure. <br>Design with intention.</h1>
+                <span class="user-name serif">Designer / Han Dong Gyun</span>
+                <p>3D 기반의 시각 표현과 브랜드 경험을 설계합니다. 단순한 장식보다 명확한 의도와 형태의 균형이 담긴 결과물을 지향합니다.</p>
+                
+                <div class="sidebar-section">
+                    <h3 class="section-title">Information</h3>
+                    <ul class="sidebar-list">
+                        <li class="hover-item"><span>성명 / Name</span><span>한동균 (Han Dong Gyun)</span></li>
+                        <li class="hover-item"><span>생년월일 / Birth</span><span>1995. 06. 09</span></li>
+                        <li class="hover-item"><span>연락처 / Phone</span><span>010. 8468. 1968</span></li>
+                        <li class="hover-item"><span>이메일 / Email</span><a href="mailto:qpw6969@gmail.com" class="hover-link">qpw6969@gmail.com</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="section-title">Education & Experience</h3>
+                    <ul class="sidebar-list">
+                        <!-- 날짜 순 (이른 날짜부터) 재배치 -->
+                        <li class="hover-item"><span>경주 문화고등학교 졸업</span><span>2014. 02</span></li>
+                        <li class="hover-item"><span>육군병장 만기전역</span><span>2017. 04</span></li>
+                        <li class="hover-item"><span>부산대학교 무역학부 졸업 (Pusan Nat'l Univ.)</span><span>2021. 08</span></li>
+                        <li class="hover-item"><span>그린 컴퓨터 시각디자인 영상과정 수료</span><span>2022. 02</span></li>
+                        <li class="hover-item"><span>SBS 아카데미 3D 모션그래픽과정 수료</span><span>2023. 04</span></li>
+                        <li class="hover-item"><span>나래디자인 학원 UIUX반응형 웹디자인 수료</span><span>2026. 01</span></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="section-title">Work Experience</h3>
+                    <ul class="sidebar-list">
+                        <li class="hover-item"><span>프리랜서 활동 (3D 모션그래픽)</span><span>2023. 06 - Current</span></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="section-title">Expertise</h3>
+                    <ul class="sidebar-list">
+                        <li class="hover-item"><span>Graphic / Layout</span><span>PS, AI, ID</span></li>
+                        <li class="hover-item"><span>Motion / 3D</span><span>C4D, AE, PR</span></li>
+                        <li class="hover-item"><span>Development Tool</span><span>Figma, VS Code</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="sidebar-footer">&copy; 2026 / HAN DONG GYUN PORTFOLIO</div>
+        </div>
+    </aside>
+
+    <main class="main-content" id="slider">
+        <div class="slider-inner" id="slider-inner">
+            <div class="project-item">
+                <div class="project-image-wrap">
+                    <div class="project-img" style="background-image: url(img/screens0001.png)"></div>
+                    <div class="project-menu">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="menu-link magnetic hover-link">BIBX GUIDE</a>
+                        <a href="https://donggyun-webdesign.github.io/carryon/" target="_blank" rel="noopener noreferrer" class="menu-link magnetic hover-link">WEBSITE</a>
+                    </div>
+                </div>
+                <div class="project-meta parallax-element" data-speed="0.05">
+                    <div><span class="project-category">2025 / Branding & System</span><h3 class="project-title serif italic">CARRYON ENERGY DRINK</h3></div><span class="project-year">01</span>
+                </div>
+                <div class="bg-number parallax-element" data-speed="0.1">01</div>
+            </div>
+
+            <div class="project-item">
+                <div class="project-image-wrap">
+                    <div class="project-img" style="background-image: url(img/8_.png)"></div>
+                    <div class="project-menu">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="menu-link magnetic hover-link">RENDER SHOT</a>
+                    </div>
+                </div>
+                <div class="project-meta parallax-element" data-speed="0.05">
+                    <div><span class="project-category">2025 / modeling & rendering </span><h3 class="project-title serif italic">CORDIX CARRIER</h3></div><span class="project-year">02</span>
+                </div>
+                <div class="bg-number parallax-element" data-speed="0.1">02</div>
+            </div>
+
+            <div class="project-item">
+                <div class="project-image-wrap">
+                    <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=1200')"></div>
+                    <div class="project-menu">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="menu-link magnetic hover-link">WEBSITE</a>
+                    </div>
+                </div>
+                <div class="project-meta parallax-element" data-speed="0.05">
+                    <div><span class="project-category">2026 / Interaction</span><h3 class="project-title serif italic">ICE BLUE OBJECTS</h3></div><span class="project-year">03</span>
+                </div>
+                <div class="bg-number parallax-element" data-speed="0.1">03</div>
+            </div>
+
+            <div class="project-item">
+                <div class="project-image-wrap">
+                    <div class="project-img" style="background-image: url(img/3_0297.png)"></div>
+                    <div class="project-menu">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="menu-link magnetic hover-link">video/detail</a>
+                    </div>
+                </div>
+                <div class="project-meta parallax-element" data-speed="0.05">
+                    <div><span class="project-category">2023 / Motion Graphics</span><h3 class="project-title serif italic">NATIONAL GEOGRAPHIC</h3></div><span class="project-year">04</span>
+                </div>
+                <div class="bg-number parallax-element" data-speed="0.1">04</div>
+            </div>
+
+            <div class="project-item">
+                <div class="project-image-wrap">
+                    <div class="project-img" style="background-image: url(img/airpods2.png)"></div>
+                    <div class="project-menu">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="menu-link magnetic hover-link">video/detail</a>
+                    </div>
+                </div>
+                <div class="project-meta parallax-element" data-speed="0.05">
+                    <div><span class="project-category">2023 / Motion Graphics</span><h3 class="project-title serif italic">AIRPODS PRO</h3></div><span class="project-year">05</span>
+                </div>
+                <div class="bg-number parallax-element" data-speed="0.1">05</div>
+            </div>
+        </div>
+    </main>
+
+    <div class="pagination-container"><div class="pagination-dots" id="pagination"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+
+    <script>
+        let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
+        let targetX = 0, currentX = 0, xVelocity = 0, lastX = 0, isDown = false, startX;
+        let targetY = 0, currentY = 0;
+
+        const lerp = (a, b, n) => (1 - n) * a + n * b;
+        const sliderInner = document.getElementById('slider-inner'), slider = document.getElementById('slider');
+        const sidebar = document.getElementById('sidebar'), sidebarContent = document.getElementById('sidebar-scroll-content');
+        const dot = document.getElementById('dot'), follower = document.getElementById('follower');
+        const dots = document.querySelectorAll('.dot'), projectItems = document.querySelectorAll('.project-item');
+
+        const itemWidth = 1050; 
+
+        function animate() {
+            if (!isDown) { targetX += xVelocity; xVelocity *= 0.92; }
+            const sidebarWidth = 440;
+            const xMax = (sidebarWidth + 120 + (4 * itemWidth) + 400) - (sidebarWidth + ((window.innerWidth - sidebarWidth) / 2));
+            targetX = Math.max(0, Math.min(targetX, xMax));
+            currentX = lerp(currentX, targetX, 0.07);
+            sliderInner.style.transform = `translateX(${-currentX}px)`;
+
+            const yMax = Math.max(0, sidebarContent.scrollHeight - window.innerHeight);
+            targetY = Math.max(0, Math.min(targetY, yMax));
+            currentY = lerp(currentY, targetY, 0.07);
+            sidebarContent.style.transform = `translateY(${-currentY}px)`;
+
+            projectItems.forEach((item, index) => {
+                const img = item.querySelector('.project-img'), parallaxElements = item.querySelectorAll('.parallax-element');
+                const itemOffset = (index * itemWidth) - currentX;
+                img.style.transform = `translateX(${itemOffset * 0.15}px) scale(1.1)`;
+                parallaxElements.forEach(el => { const speed = parseFloat(el.getAttribute('data-speed')); el.style.transform = `translateX(${itemOffset * speed}px)`; });
+                item.style.transform = `skewX(${xVelocity * 0.1}deg)`;
+            });
+
+            followerX = lerp(followerX, mouseX, 0.15); followerY = lerp(followerY, mouseY, 0.15);
+            dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
+            follower.style.left = followerX + 'px'; follower.style.top = followerY + 'px';
+
+            const activeIndex = Math.min(Math.round(currentX / itemWidth), 4);
+            dots.forEach((d, i) => d.classList.toggle('active', i === activeIndex));
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; if (!isDown) return; targetX -= (e.pageX - startX); startX = e.pageX; xVelocity = lastX - e.pageX; lastX = e.pageX; });
+        slider.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX; lastX = e.pageX; xVelocity = 0; });
+        window.addEventListener('mouseup', () => isDown = false);
+        window.addEventListener('wheel', (e) => { if (e.target.closest('.sidebar')) { targetY += e.deltaY; } else { targetX += e.deltaY; xVelocity = e.deltaY * 0.1; } }, { passive: true });
+
+        sidebar.addEventListener('mouseenter', () => document.body.classList.add('cursor-scroll'));
+        sidebar.addEventListener('mouseleave', () => document.body.classList.remove('cursor-scroll'));
+        slider.addEventListener('mouseenter', () => document.body.classList.add('cursor-drag'));
+        slider.addEventListener('mouseleave', () => document.body.classList.remove('cursor-drag'));
+
+        document.querySelectorAll('.hover-link').forEach(link => {
+            link.addEventListener('mouseenter', () => { document.body.classList.remove('cursor-drag', 'cursor-scroll'); document.body.classList.add('cursor-link'); });
+            link.addEventListener('mouseleave', () => { document.body.classList.remove('cursor-link'); if (mouseX < 440) { document.body.classList.add('cursor-scroll'); } else { document.body.classList.add('cursor-drag'); } });
+        });
+
+        animate();
+    </script>
+</body>
+</html>
