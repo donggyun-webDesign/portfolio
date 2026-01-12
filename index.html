@@ -224,7 +224,6 @@
     <div class="pagination-container"><div class="pagination-dots" id="pagination"></div></div>
 
     <script>
-        // 변수 및 LERP 수식
         let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
         let targetX = 0, currentX = 0, isDown = false;
         let startX = 0, startY = 0, isDragging = false; 
@@ -245,9 +244,7 @@
             sliderInner.style.transform = `translateX(${-currentX}px)`;
             currentY = $lerp(currentY, targetY, 0.08);
             sidebarScroll.style.transform = `translateY(${-currentY}px)`;
-            
-            followerX = $lerp(followerX, mouseX, 0.1); 
-            followerY = $lerp(followerY, mouseY, 0.1);
+            followerX = $lerp(followerX, mouseX, 0.1); followerY = $lerp(followerY, mouseY, 0.1);
             dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
             follower.style.left = followerX + 'px'; follower.style.top = followerY + 'px';
 
@@ -261,13 +258,11 @@
             requestAnimationFrame(animate);
         }
 
-        // 마우스 이동 제어
         window.addEventListener('mousemove', e => { 
             mouseX = e.clientX; mouseY = e.clientY; 
             if(isDown) {
                 const moveDist = Math.sqrt(Math.pow(e.clientX - startX, 2) + Math.pow(e.clientY - startY, 2));
-                if (moveDist > 10) isDragging = true; // 10px 이상 움직이면 드래그 모드
-
+                if (moveDist > 5) isDragging = true; 
                 targetX -= (e.movementX * 1.5);
                 targetX = Math.max(0, Math.min(targetX, sliderInner.scrollWidth - window.innerWidth + 440));
             }
@@ -275,24 +270,34 @@
 
         window.addEventListener('mousedown', (e) => {
             isDown = true;
-            isDragging = false; // 누를 땐 초기화
+            isDragging = false; 
             startX = e.clientX;
             startY = e.clientY;
         });
 
         window.addEventListener('mouseup', () => {
             isDown = false;
-            // 여기서 window.open 하지 말 것 (브라우저 기본 클릭 이벤트에 맡김)
         });
 
-        // 드래그 중이었다면 브라우저의 기본 클릭(링크 이동)을 막는다.
-        // 드래그가 아니었다면(단순 클릭) 브라우저가 알아서 <a> 태그를 실행한다.
-        window.addEventListener('click', (e) => {
-            if (isDragging) {
-                e.preventDefault();
+        // ------------------------------------------------------------------
+        // [완벽 방어 로직] 
+        // 모든 <a> 태그 클릭을 가로채서 드래그 중엔 막고, 아닐 땐 '내가 직접' 하나만 연다.
+        // ------------------------------------------------------------------
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (!link) return;
+
+            // 사이드바 메일 링크 등은 제외하고 싶으면 아래 조건 추가 (여기선 프로젝트 링크만 제어)
+            if (link.classList.contains('menu-link')) {
+                e.preventDefault(); // 브라우저의 기본 이동(새탭 열기)을 무조건 죽임
                 e.stopPropagation();
+
+                if (!isDragging) {
+                    // 드래그가 아닐 때만 '딱 한 번' 수동으로 실행
+                    window.open(link.href, link.target || '_self');
+                }
             }
-        }, true); 
+        }, true); // Capture 단계에서 가장 먼저 가로챔
 
         window.addEventListener('wheel', e => { 
             if(e.clientX < 440) targetY = Math.max(0, Math.min(targetY + e.deltaY, sidebarScroll.scrollHeight - window.innerHeight));
