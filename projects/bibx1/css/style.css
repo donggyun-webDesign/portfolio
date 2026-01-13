@@ -1,0 +1,54 @@
+@charset "utf-8";
+
+/* 1. 전체 초기화  */
+
+{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+/* 2. 바디에만 브랜드 컬러 적용 /
+body {
+background-color: #010204; / CARRYON 딥 블랙 */
+color: #eef2f5;
+-webkit-font-smoothing: antialiased;
+}
+
+/* 3. 이미지 중앙 정렬 로직 */
+.guide-container {
+width: 100%;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.guide-container img {
+max-width: 1320px;
+width: 100%;
+display: block;
+}
+
+
+
+.nav-btn {
+position: fixed;
+width: 54px;
+height: 54px;
+display: flex;
+align-items: center;
+justify-content: center;
+background: rgba(255, 255, 255, 0.05);
+border: 1px solid rgba(255, 255, 255, 0.15);
+backdrop-filter: blur(15px);
+-webkit-backdrop-filter: blur(15px);
+border-radius: 50%;
+transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+z-index: 999;
+}
+
+.nav-btn:hover {
+border-color: #A5D7E8;
+background: rgba(165, 215, 232, 0.15);
+transform: translateY(-5px);
+}
