@@ -39,7 +39,7 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* Custom Video Controls 이식 */
+        /* Custom Video Controls */
         .video-controls {
             position: absolute;
             bottom: 0;
@@ -67,7 +67,7 @@
         }
         .progress-bar {
             height: 100%;
-            background: #fff; /* 에어팟 컨셉에 맞춰 화이트로 설정 */
+            background: #fff;
             width: 0%;
             border-radius: 2px;
             position: relative;
@@ -93,24 +93,27 @@
             accent-color: #fff;
             cursor: pointer;
         }
+        /* Close 버튼 클릭 영역 확보 */
+        .close-btn {
+            cursor: pointer;
+            position: relative;
+            z-index: 100;
+        }
     </style>
 </head>
 <body class="bg-black">
 
-    <!-- Header / Close Button -->
     <nav class="fixed top-0 w-full z-50 px-6 py-6 flex justify-between items-center mix-blend-difference">
         <div class="text-sm font-bold tracking-tighter uppercase">Project Detail</div>
-        <a href="javascript:history.back()" class="group flex items-center space-x-2">
+        <button onclick="handleClose()" class="close-btn group flex items-center space-x-2 bg-transparent border-none outline-none">
             <span class="text-[10px] tracking-widest text-gray-400 group-hover:text-white transition">CLOSE</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path d="M18 6L6 18M6 6l12 12"/>
             </svg>
-        </a>
+        </button>
     </nav>
 
-    <!-- Main Content -->
     <main>
-        <!-- Hero: Main Video Area -->
         <section class="pt-24 pb-12 px-4 md:px-10">
             <div class="video-wrapper rounded-3xl border border-white/10 shadow-2xl group">
                 <video id="project-video" autoplay muted loop playsinline class="video-element">
@@ -118,22 +121,18 @@
                     Your browser does not support the video tag.
                 </video>
 
-                <!-- Custom Video Controls 이식 -->
                 <div class="video-controls">
-                    <!-- Progress Bar -->
                     <div class="progress-container" id="progress-container">
                         <div class="progress-bar" id="progress-bar"></div>
                     </div>
                     
                     <div class="flex justify-between items-center px-2">
                         <div class="flex items-center gap-6">
-                            <!-- Play/Pause Button -->
                             <button id="play-pause" class="hover:text-gray-400 transition">
                                 <svg id="play-icon" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                                 <svg id="pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                             </button>
 
-                            <!-- Volume Control -->
                             <div class="flex items-center gap-3 group/vol">
                                 <button id="mute-toggle" class="hover:text-gray-400 transition">
                                     <svg id="volume-high" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
@@ -143,7 +142,6 @@
                             </div>
                         </div>
 
-                        <!-- Fullscreen -->
                         <button id="fullscreen-btn" class="hover:text-gray-400 transition">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
                         </button>
@@ -162,11 +160,8 @@
             </div>
         </section>
 
-        <!-- Project Description -->
         <section class="px-6 py-24 md:px-24">
             <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16">
-                
-                <!-- Left: Description -->
                 <div class="lg:col-span-7">
                     <h2 class="text-xs tracking-widest text-gray-500 uppercase mb-8">Concept & Story</h2>
                     <h3 class="text-3xl md:text-4xl font-bold tracking-tighter leading-tight mb-8">
@@ -174,12 +169,10 @@
                     </h3>
                     <p class="text-gray-400 text-lg font-light leading-relaxed mb-8">
                         단순한 하드웨어의 외형을 보여주는 것을 넘어, 에어팟 프로의 핵심 아이덴티티인 '정적'을 시각화하는 데 집중했습니다. <br><br>
-                        아이폰 내부 ui를 이용해 외부 소음이 사라지는 순간을 묘사했고, 
-                        에프터 이펙트(After Effects)의 정교한 키프레임 제어를 통해 음악의 리듬과 제품의 움직임을 동기화했습니다.
+                        아이폰 내부 UI를 이용해 외부 소음이 사라지는 순간을 묘사했고, 에프터 이펙트(After Effects)의 정교한 키프레임 제어를 통해 음악의 리듬과 제품의 움직임을 동기화했습니다.
                     </p>
                 </div>
 
-                <!-- Right: Key Features (Glass Card) -->
                 <div class="lg:col-span-5 space-y-6">
                     <div class="glass-card p-8 rounded-3xl">
                         <h4 class="text-sm tracking-widest text-white uppercase mb-4 font-bold">Key Highlights</h4>
@@ -202,7 +195,6 @@
             </div>
         </section>
 
-        <!-- Toolset Section -->
         <section class="px-6 pb-32 md:px-24 border-t border-white/5 pt-20">
             <div class="flex flex-wrap gap-x-16 gap-y-8">
                 <div>
@@ -221,13 +213,28 @@
         </section>
     </main>
 
-    <!-- Simple Footer -->
     <footer class="py-12 px-8 flex justify-center border-t border-white/5">
-        <p class="text-[10px] text-gray-700 tracking-widest uppercase">&copy; 2024 HAN DONG-GYUN. ALL RIGHTS RESERVED.</p>
+        <p class="text-[10px] text-gray-700 tracking-widest uppercase">&copy; 2026 HAN DONG-GYUN. ALL RIGHTS RESERVED.</p>
     </footer>
 
-    <!-- Video Controller Script 이식 -->
     <script>
+        // 닫기 버튼 로직: 새 탭이면 닫고, 아니면 뒤로가기
+        function handleClose() {
+            if (window.opener || window.history.length === 1) {
+                // 부모 창이 있거나 히스토리가 하나뿐이면(새 탭) 창 닫기
+                window.close();
+                // 브라우저에 따라 window.close()가 막힐 경우를 대비한 꼼수
+                setTimeout(() => {
+                    if(!window.closed) {
+                        window.open('', '_self', '').close();
+                    }
+                }, 100);
+            } else {
+                // 이전 기록이 있으면 뒤로가기
+                window.history.back();
+            }
+        }
+
         const video = document.getElementById('project-video');
         const playPauseBtn = document.getElementById('play-pause');
         const playIcon = document.getElementById('play-icon');
@@ -255,8 +262,10 @@
 
         // Update Progress Bar
         video.addEventListener('timeupdate', () => {
-            const progress = (video.currentTime / video.duration) * 100;
-            progressBar.style.width = `${progress}%`;
+            if(video.duration) {
+                const progress = (video.currentTime / video.duration) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
         });
 
         // Click on Progress Bar to Scrub
@@ -294,16 +303,11 @@
 
         // Fullscreen
         fullscreenBtn.addEventListener('click', () => {
-            if (video.requestFullscreen) {
-                video.requestFullscreen();
-            } else if (video.webkitRequestFullscreen) {
-                video.webkitRequestFullscreen();
-            } else if (video.msRequestFullscreen) {
-                video.msRequestFullscreen();
-            }
+            if (video.requestFullscreen) video.requestFullscreen();
+            else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+            else if (video.msRequestFullscreen) video.msRequestFullscreen();
         });
 
-        // Initial UI State Check
         window.addEventListener('load', () => {
             if (!video.paused) {
                 playIcon.classList.add('hidden');
@@ -312,6 +316,5 @@
             updateVolumeUI();
         });
     </script>
-
 </body>
 </html>
