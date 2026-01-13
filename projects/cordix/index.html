@@ -7,23 +7,69 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <style>
-        body { font-family: 'Pretendard', sans-serif; background-color: #050505; margin: 0; overflow-x: hidden; }
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #050505; 
+            margin: 0; 
+            overflow-x: hidden;
+        }
         ::-webkit-scrollbar { display: none; }
-        .text-gradient { background: linear-gradient(135deg, #fff 0%, #333 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .slide-item { position: absolute; inset: 0; opacity: 0; transition: opacity 1200ms ease-in-out; z-index: 0; }
-        .slide-item.active { opacity: 1; z-index: 10; }
-        .slide-img { width: 100%; height: 100%; object-fit: cover; }
-        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); z-index: 40; transition: all 0.3s ease; cursor: pointer; }
-        .close-btn { cursor: pointer; position: relative; z-index: 1000; pointer-events: auto !important; }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #fff 0%, #333 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 슬라이더 트랜지션용 커스텀 CSS */
+        .slide-item {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1200ms ease-in-out;
+            z-index: 0;
+        }
+        .slide-item.active {
+            opacity: 1;
+            z-index: 10;
+        }
+        .slide-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1);
+        }
+        
+        /* 화살표 버튼 위치 최적화 */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 40;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .nav-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Close 버튼 클릭 영역 및 스타일 */
+        .close-btn {
+            cursor: pointer;
+            position: relative;
+            z-index: 100;
+            pointer-events: auto !important;
+        }
     </style>
 </head>
 <body class="text-white antialiased">
 
-    <nav class="fixed top-0 w-full z-[100] px-8 py-10 flex justify-between items-center mix-blend-difference">
+    <nav class="fixed top-0 w-full z-50 px-8 py-10 flex justify-between items-center mix-blend-difference">
         <div class="text-[10px] font-black tracking-[0.5em] uppercase opacity-50">Project Detail</div>
         <button onclick="handleClose()" class="close-btn opacity-50 hover:opacity-100 transition-all flex items-center space-x-2 bg-transparent border-none outline-none">
             <span class="text-[10px] tracking-widest uppercase">CLOSE</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -32,18 +78,25 @@
 
     <main>
         <section class="relative w-full h-[95vh] bg-[#030303] flex justify-center items-center overflow-hidden border-b border-white/5">
+            
             <button id="prev-btn" class="nav-btn left-4 lg:left-10 p-4 text-white/20 rounded-full">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
+            
             <button id="next-btn" class="nav-btn right-4 lg:right-10 p-4 text-white/20 rounded-full">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </button>
 
             <div class="flex w-full max-w-6xl h-full shadow-[0_0_100px_rgba(0,0,0,0.8)] relative z-10 bg-black">
-                <div id="left-slider" class="relative w-1/2 h-full overflow-hidden border-r border-white/10"></div>
-                <div id="right-slider" class="relative w-1/2 h-full overflow-hidden"></div>
+                <div id="left-slider" class="relative w-1/2 h-full overflow-hidden border-r border-white/10">
+                </div>
+
+                <div id="right-slider" class="relative w-1/2 h-full overflow-hidden">
+                </div>
             </div>
 
+            <div class="absolute inset-0 z-0 opacity-20 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.05)_0%,_transparent_70%)]"></div>
+            
             <div class="absolute bottom-0 left-0 z-30 w-full h-[2px] bg-white/5">
                 <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-500 ease-out" style="width: 0%"></div>
             </div>
@@ -51,42 +104,80 @@
 
         <section class="max-w-[1400px] mx-auto px-8 pt-24 pb-48">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-20 items-start">
+                
                 <div class="lg:col-span-8 space-y-12">
-                    <h1 class="text-[10vw] lg:text-[11rem] font-black tracking-tighter uppercase leading-[0.9] text-gradient py-2">CORDIX</h1>
-                    <h2 class="text-zinc-800 text-[8vw] lg:text-[8rem] font-black tracking-tighter uppercase leading-[0.9]">CARRIER</h2>
+                    <div class="relative">
+                        <h1 class="text-[10vw] lg:text-[11rem] font-black tracking-tighter uppercase leading-[0.9] text-gradient py-2">
+                            CORDIX
+                        </h1>
+                        <h2 class="text-zinc-800 text-[8vw] lg:text-[8rem] font-black tracking-tighter uppercase leading-[0.9]">
+                            CARRIER
+                        </h2>
+                    </div>
+                    
                     <div class="max-w-2xl">
                         <p class="text-zinc-400 text-2xl font-light leading-relaxed">
-                            실사 기반의 정밀 3D 시각화 프로젝트. <br>Cinema 4D R26 모델링과 Octane Renderer를 활용한 하이엔드 비주얼 구축.
+                            실사 기반의 정밀 3D 시각화 프로젝트. 
+                            제품 실측을 바탕으로 Cinema 4D R26에서 하드서페이스 모델링을 진행했으며, 
+                            Octane Renderer의 물리 기반 렌더링을 통해 하이엔드 제품 이미지를 구축했습니다.
                         </p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4 pt-12 lg:pt-32 border-t lg:border-t-0 lg:border-l border-white/5 lg:pl-16 space-y-12">
+                    <div class="space-y-8">
+                        <div>
+                            <p class="text-[10px] text-zinc-600 tracking-[0.5em] uppercase font-bold mb-3">Technical Toolset</p>
+                            <p class="text-xl font-bold italic text-zinc-300">C4D R26 / Octane Render</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-zinc-600 tracking-[0.5em] uppercase font-bold mb-3">Key Process</p>
+                            <p class="text-xl font-bold italic text-zinc-200">Hard-Surface Modeling</p>
+                            <p class="text-xl font-bold italic text-zinc-200">PBR Material Shading</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-zinc-600 tracking-[0.5em] uppercase font-bold mb-3">Client</p>
+                            <p class="text-xl font-bold italic text-zinc-300">CORDIX KOREA</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
+    <footer class="py-24 border-t border-white/5 bg-[#030303] text-center">
+        <p class="text-[10px] text-zinc-800 tracking-[0.6em] font-black uppercase">
+            &copy; 2026 HAN DONG-GYUN. ALL RIGHTS RESERVED.
+        </p>
+    </footer>
+
     <script>
-        // 1. 닫기 로직을 맨 위로 올려서 다른 에러의 영향을 최소화함
+        // 닫기 로직: 슬라이더 에러와 상관없이 작동하도록 독립적으로 배치
         function handleClose() {
-            console.log("Close clicked"); // 작동 확인용
-            if (window.opener) {
+            if (window.opener || window.history.length === 1) {
                 window.close();
-            } else if (window.history.length > 1) {
-                window.history.back();
-                // 0.5초 뒤에도 안 닫히면 강제 종료 꼼수
-                setTimeout(() => { window.open('', '_self', '').close(); }, 500);
+                setTimeout(() => {
+                    if(!window.closed) {
+                        window.open('', '_self', '').close();
+                    }
+                }, 100);
             } else {
-                window.open('', '_self', '').close();
+                window.history.back();
             }
         }
 
-        // 2. 슬라이더 로직
-        const images = ["img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png", "img/9.png", "img/10.png"];
+        const images = [
+            "img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png",
+            "img/6.png", "img/7.png", "img/8.png", "img/9.png", "img/10.png"
+        ];
+
         let currentIndex = 0;
         const leftSlider = document.getElementById('left-slider');
         const rightSlider = document.getElementById('right-slider');
         const progressBar = document.getElementById('progress-bar');
 
-        if (leftSlider && rightSlider) {
+        function initSliders() {
+            if(!leftSlider || !rightSlider) return;
             images.forEach((src, idx) => {
                 const leftItem = document.createElement('div');
                 leftItem.className = `slide-item left-item-${idx}`;
@@ -98,33 +189,50 @@
                 rightItem.innerHTML = `<img src="${src}" class="slide-img" alt="">`;
                 rightSlider.appendChild(rightItem);
             });
-
-            function updateSlider() {
-                const nextIdx = (currentIndex + 1) % images.length;
-                document.querySelectorAll('.slide-item').forEach(el => el.classList.remove('active'));
-                
-                const cL = document.querySelector(`.left-item-${currentIndex}`);
-                const cR = document.querySelector(`.right-item-${nextIdx}`);
-                if(cL) cL.classList.add('active');
-                if(cR) cR.classList.add('active');
-
-                progressBar.style.width = `${((currentIndex + 1) / images.length) * 100}%`;
-            }
-
-            function nextSlide() { currentIndex = (currentIndex + 1) % images.length; updateSlider(); }
-            function prevSlide() { currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1; updateSlider(); }
-
-            let slideInterval = setInterval(nextSlide, 5000);
-
-            document.getElementById('next-btn')?.addEventListener('click', () => {
-                clearInterval(slideInterval); nextSlide(); slideInterval = setInterval(nextSlide, 5000);
-            });
-            document.getElementById('prev-btn')?.addEventListener('click', () => {
-                clearInterval(slideInterval); prevSlide(); slideInterval = setInterval(nextSlide, 5000);
-            });
-
             updateSlider();
         }
+
+        function updateSlider() {
+            const nextIdx = (currentIndex + 1) % images.length;
+            document.querySelectorAll('.slide-item').forEach(el => el.classList.remove('active'));
+
+            const currentLeft = document.querySelector(`.left-item-${currentIndex}`);
+            const currentRight = document.querySelector(`.right-item-${nextIdx}`);
+            
+            if(currentLeft) currentLeft.classList.add('active');
+            if(currentRight) currentRight.classList.add('active');
+
+            if(progressBar) {
+                const progress = ((currentIndex + 1) / images.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateSlider();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1;
+            updateSlider();
+        }
+
+        let slideInterval = setInterval(nextSlide, 5000);
+
+        document.getElementById('next-btn')?.addEventListener('click', () => {
+            clearInterval(slideInterval);
+            nextSlide();
+            slideInterval = setInterval(nextSlide, 5000);
+        });
+
+        document.getElementById('prev-btn')?.addEventListener('click', () => {
+            clearInterval(slideInterval);
+            prevSlide();
+            slideInterval = setInterval(nextSlide, 5000);
+        });
+
+        initSliders();
     </script>
 </body>
 </html>
