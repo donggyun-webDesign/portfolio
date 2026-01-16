@@ -7,19 +7,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="img/favicon.png">
     <style>
         :root {
             --bg: #010204; 
             --fg: #eef2f5;
             --sub: #8a99a8;
             --accent: #A5D7E8; 
-            --sidebar-width: 440px;
+            --sidebar-base-width: 440px;
+            --sidebar-width: var(--sidebar-base-width);
             --glass-border: rgba(255, 255, 255, 0.2);
             --item-width: 1050px; 
+            
+            /* 폰트 및 로고 확대 변수 */
+            --font-scale: 1;
+            --base-fs: 14px; 
         }
 
-        /* --- 전역 스크롤바 박멸 및 박스 모델 고정 --- */
+        /* --- 전역 스크롤바 UI 박멸 --- */
         html, body, * {
             -ms-overflow-style: none !important;
             scrollbar-width: none !important;
@@ -40,78 +44,25 @@
 
         @media (min-width: 1025px) { body { cursor: none; } }
 
-        /* --- [반응형 섹션] 휴대폰 사이즈 (768px 이하) --- */
+        /* --- [반응형] 휴대폰 사이즈 (768px 이하) --- */
         @media (max-width: 768px) {
-            html, body { 
-                overflow-y: auto !important; 
-                overflow-x: hidden !important; 
-                height: auto !important; 
-            }
-            .sidebar {
-                position: relative !important;
-                width: 100% !important;
-                height: auto !important;
-                border-right: none !important;
-                border-bottom: 1px solid var(--glass-border) !important;
-            }
-            .sidebar-scroll-content { padding: 60px 25px !important; transform: none !important; }
+            html, body { overflow-y: auto !important; overflow-x: hidden !important; height: auto !important; }
+            .sidebar { position: relative !important; width: 100% !important; height: auto !important; border: none !important; }
+            .sidebar-scroll-content { padding: 60px 25px !important; transform: none !important; font-size: 13px !important; }
             
-            .main-content { 
-                position: relative !important; 
-                height: auto !important; 
-                width: 100% !important;
-                left: 0 !important;
-                top: 0 !important;
-            }
-            .slider-inner { 
-                display: flex !important;
-                flex-direction: column !important; /* 수직 정렬 */
-                padding: 40px 20px !important; 
-                gap: 80px !important;
-                transform: none !important; 
-                width: 100% !important;
-                align-items: center !important; /* 가로 중앙 배치 */
-            }
-            .project-item { 
-                width: 100% !important; 
-                max-width: 100% !important;
-                margin-right: 0 !important; 
-                padding-bottom: 0 !important;
-                transform: none !important;
-            }
-            /* 사진 틀: 가로 꽉 채우고 빈칸 없게 높이 최적화 */
-            .project-image-wrap { 
-                height: 50vh !important; 
-                width: 100% !important;
-                overflow: hidden !important;
-            }
-            /* [핵심] 사진: 빈칸 없이 꽉 채우고 중앙 고정 */
-            .project-img {
-                width: 100% !important;
-                height: 100% !important;
-                left: 0 !important;
-                top: 0 !important;
-                background-size: cover !important; /* 틀을 빈틈없이 채움 */
-                background-position: center !important;
-                transform: scale(1.05) !important; /* 미세한 확대 효과만 유지 */
-            }
-            .project-menu { opacity: 1 !important; transform: none !important; }
-            .menu-link { opacity: 1 !important; transform: none !important; padding: 12px 25px !important; font-size: 10px !important; }
-            
-            /* [핵심] 제목 왼쪽 정렬 고정 */
-            .project-meta { 
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: flex-start !important; /* 무조건 왼쪽으로 */
-                text-align: left !important; 
-                margin-top: 25px !important;
-                width: 100% !important;
-            }
-            .project-title { font-size: 30px !important; text-align: left !important; width: 100% !important; }
-            .project-category { text-align: left !important; width: 100% !important; }
-            
-            .bg-number { display: none !important; }
-            .pagination-container { display: none !important; }
+            /* 모바일 로고 크기 고정 */
+            .logo-img { height: 30px !important; }
+
+            .main-content { position: relative !important; height: auto !important; width: 100% !important; left: 0 !important; top: 0 !important; }
+            .slider-inner { display: flex !important; flex-direction: column !important; padding: 40px 20px !important; gap: 80px !important; transform: none !important; width: 100% !important; align-items: center !important; padding-left: 20px !important; }
+            .project-item { width: 100% !important; margin-right: 0 !important; transform: none !important; }
+            .project-image-wrap { height: 50vh !important; width: 100% !important; }
+            .project-img { width: 100% !important; height: 100% !important; left: 0 !important; background-size: cover !important; transform: none !important; }
+            .project-menu { opacity: 1 !important; }
+            .menu-link { padding: 12px 25px !important; font-size: 10px !important; }
+            .project-meta { align-items: flex-start !important; text-align: left !important; transform: none !important; }
+            .project-title { font-size: 30px !important; }
+            .bg-number, .pagination-container { display: none !important; }
         }
 
         body::after {
@@ -128,39 +79,90 @@
         .blob-1 { width: 90vw; height: 90vw; background: radial-gradient(circle, rgba(165, 215, 232, 0.25) 0%, transparent 70%); top: -30%; left: -10%; animation: move-1 25s infinite alternate ease-in-out; }
         .blob-2 { width: 80vw; height: 80vw; background: radial-gradient(circle, rgba(30, 60, 120, 0.2) 0%, transparent 70%); bottom: -20%; right: -15%; animation: move-2 35s infinite alternate ease-in-out; }
         .blob-3 { width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(165, 215, 232, 0.1) 0%, transparent 70%); top: 20%; left: 10%; animation: move-3 30s infinite alternate ease-in-out; }
-        @keyframes move-1 { 0% { transform: translate(0, 0) scale(1) rotate(0deg); } 50% { transform: translate(20%, 15%) scale(1.3) rotate(120deg); } 100% { transform: translate(-10%, 10%) scale(0.8) rotate(-60deg); } }
-        @keyframes move-2 { 0% { transform: translate(0, 0) scale(1) rotate(0deg); } 50% { transform: translate(-20%, -15%) scale(0.8) rotate(-90deg); } 100% { transform: translate(15%, 5%) scale(1.1) rotate(45deg); } }
-        @keyframes move-3 { 0% { transform: translate(0, 0) scale(1.1); } 50% { transform: translate(0, -10%) scale(0.9); } 100% { transform: translate(-15%, 20%) scale(1.3); } }
 
         /* --- 사이드바 --- */
         .sidebar {
             position: fixed;
             top: 0; left: 0; width: var(--sidebar-width); height: 100vh;
             border-right: 1px solid var(--glass-border);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(0, 0, 0, 0.25) 100%); 
-            backdrop-filter: blur(80px) saturate(180%) contrast(110%) brightness(1.1);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(0, 0, 0, 0.4) 100%); 
+            backdrop-filter: blur(100px) saturate(180%);
             z-index: 200; overflow-x: hidden; overflow-y: auto;
-            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 10px 0 60px rgba(0, 0, 0, 0.5);
+            box-shadow: 10px 0 100px rgba(0, 0, 0, 0.8);
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: width;
         }
-        .sidebar-scroll-content { padding: 100px 60px; display: flex; flex-direction: column; will-change: transform; }
-        .logo { font-size: 18px; font-weight: 800; letter-spacing: 0.5em; margin-bottom: 80px; color: #fff;}
-                .badge { display: inline-block; font-size: 10px; letter-spacing: 0.25em; font-weight: 900; color: var(--accent); border: 1px solid rgba(165, 215, 232, 0.5); padding: 5px 12px; margin-bottom: 40px; text-transform: uppercase; background: rgba(165, 215, 232, 0.1); }
-        .intro h1 { font-size: 40px; line-height: 1.15; margin-bottom: 35px; font-weight: 300; letter-spacing: -0.04em; color: #fff; }
+
+        @media (min-width: 1025px) {
+            .sidebar:hover {
+                --sidebar-width: 650px; 
+                --font-scale: 1.4; 
+            }
+        }
+
+        .sidebar-scroll-content { 
+            padding: 100px 60px; 
+            display: flex; flex-direction: column; 
+            will-change: transform; 
+        }
+
+        /* [로고 이미지 최적화] */
+        .logo { margin-bottom: 80px; }
+        .logo-img {
+            height: calc(200px * var(--font-scale)); /* 텍스트 스케일과 동기화 */
+            width: auto;
+            display: block;
+            object-fit: contain;
+            transition: height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            /* filter: brightness(0) invert(1); 로고 파일이 어두울 경우 대비를 위해 반전 필요시 주석 해제 */
+        }
+
+        .badge { 
+            display: inline-block; font-size: 10px; letter-spacing: 0.25em; font-weight: 900; 
+            color: var(--accent); border: 1px solid rgba(165, 215, 232, 0.5); 
+            padding: 5px 12px; margin-bottom: 40px; text-transform: uppercase; 
+            background: rgba(165, 215, 232, 0.1); 
+        }
+        .intro h1 { 
+            font-size: calc(40px * var(--font-scale)); 
+            line-height: 1.15; margin-bottom: 35px; font-weight: 300; letter-spacing: -0.04em; color: #fff; 
+            transition: font-size 0.8s;
+        }
         .user-name { font-size: 12px; letter-spacing: 0.4em; color: var(--accent); font-weight: 800; margin-bottom: 20px; display: block; text-transform: uppercase; }
-        .intro p { font-size: 14px; color: #fff; line-height: 2; max-width: 320px; word-break: keep-all; margin-bottom: 60px; opacity: 0.8; }
+        .intro p { 
+            font-size: calc(14px * var(--font-scale)); 
+            color: #fff; line-height: 1.8; max-width: 100%; word-break: keep-all; margin-bottom: 60px; opacity: 0.8; 
+            transition: font-size 0.8s;
+        }
+        
         .sidebar-section { padding-top: 30px; margin-bottom: 30px; border-top: 1px solid rgba(255, 255, 255, 0.15); }
         .section-title { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: var(--accent); margin-bottom: 20px; }
-        .sidebar-list li { font-size: 12px; color: var(--fg); margin-bottom: 14px; list-style: none; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+        
+        .sidebar-list li { 
+            font-size: calc(12px * var(--font-scale)); 
+            color: var(--fg); margin-bottom: 16px; list-style: none; 
+            display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;
+            transition: font-size 0.8s;
+        }
         .sidebar-list li span:first-child { flex: 1; opacity: 0.7; }
-        .sidebar-list li span:last-child { opacity: 1 !important; color: #fff !important; font-weight: 500; font-size: 11px; white-space: nowrap; }
+        .sidebar-list li span:last-child { 
+            opacity: 1 !important; color: #fff !important; font-weight: 500; 
+            font-size: calc(11px * var(--font-scale)); 
+            white-space: nowrap; 
+        }
+        
         a.hover-link { color: inherit !important; text-decoration: none !important; }
         .sidebar-footer { font-size: 10px; color: #fff; opacity: 0.3; letter-spacing: 0.2em; text-transform: uppercase; padding-top: 50px; border-top: 1px solid rgba(255, 255, 255, 0.1); flex-shrink: 0; margin-top: auto; }
 
         /* --- 슬라이더 레이아웃 --- */
         .main-content { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; }
-        .slider-inner { display: flex; align-items: center; height: 100%; padding-left: calc(var(--sidebar-width) + 120px); padding-right: 150vw; will-change: transform; }
+        .slider-inner { 
+            display: flex; align-items: center; height: 100%; 
+            padding-left: calc(var(--sidebar-width) + 120px); 
+            padding-right: 150vw; will-change: transform, padding-left; 
+            transition: padding-left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
         .project-item { flex-shrink: 0; width: 800px; margin-right: 250px; position: relative; will-change: transform; padding-bottom: 100px; }
-        
         .project-image-wrap { width: 100%; aspect-ratio: 16/9; overflow: hidden; position: relative; background: #010204; box-shadow: 0 80px 160px rgba(0,0,0,1), inset 0 0 0 3px #010204; transform-style: preserve-3d; backface-visibility: hidden; clip-path: inset(0.5px); }
         .project-image-wrap::after { content: ""; position: absolute; top: -2px; left: -2px; width: calc(100% + 4px); height: calc(100% + 4px); background: linear-gradient(to top, rgba(1, 2, 4, 1) 0%, rgba(1, 2, 4, 0.85) 20%, rgba(1, 2, 4, 0.25) 60%, transparent 100%); z-index: 2; pointer-events: none; }
         .project-img { width: 150%; height: 100%; background-size: cover; background-position: center; position: absolute; top: 0; left: -25%; filter: grayscale(10%) brightness(1); transition: filter 0.8s ease; will-change: transform; backface-visibility: hidden; }
@@ -170,7 +172,6 @@
         .menu-link { display: block; color: #fff; font-size: 12px; letter-spacing: 0.35em; text-transform: uppercase; font-weight: 700; padding: 18px 60px; border: 1px solid rgba(255, 255, 255, 0.4); backdrop-filter: blur(15px); background: rgba(255, 255, 255, 0.15); opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); text-decoration: none; pointer-events: auto; }
         .project-item:hover .menu-link { opacity: 1; transform: translateY(0); }
         .menu-link:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-
         .project-meta { margin-top: 45px; display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 5; }
         .project-category { font-size: 12px; color: var(--accent); letter-spacing: 0.35em; margin-bottom: 12px; display: block; text-transform: uppercase; font-weight: 800; text-shadow: 0 2px 15px rgba(0,0,0,1); }
         .project-title { font-size: 64px; font-weight: 400; letter-spacing: -0.01em; line-height: 0.95; color: #fff; text-shadow: 0 10px 50px rgba(0,0,0,1), 0 0 30px rgba(0,0,0,0.8); }
@@ -221,9 +222,13 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-scroll-content" id="sidebar-scroll-content">
-            <div class="logo"><img src="./img/side_img.png" alt=""></div>
+            <!-- [로고 이미지 경로: side_img.png] -->
+            <div class="logo">
+                <img src="./img/side_img.png" alt="LOGO" class="logo-img">
+            </div>
+            
             <div class="intro">
-                <div class="badge">Portfolio 2026</div>
+                <!-- <div class="badge">Portfolio 2026</div> -->
                 <h1 class="serif italic">Visuals with structure. <br>Design with intention.</h1>
                 <span class="user-name serif">Designer / Han Dong Gyun</span>
                 <p>3D 기반의 시각 표현과 브랜드 경험을 설계합니다. 단순한 장식보다 명확한 의도와 형태의 균형이 담긴 결과물을 지향합니다.</p>
@@ -357,7 +362,6 @@
 
         const itemWidth = 1050; 
 
-        // Pagination Dots 생성
         projectItems.forEach((_, i) => { const d = document.createElement('div'); d.className = 'dot' + (i===0?' active':''); pagination.appendChild(d); });
         const dots = document.querySelectorAll('.dot');
 
@@ -366,8 +370,8 @@
 
             if (!isMobile) {
                 if (!isDown) { targetX += xVelocity; xVelocity *= 0.92; }
-                const sidebarWidth = 440;
-                const xMax = (sidebarWidth + 120 + (projectItems.length * itemWidth) + 400) - window.innerWidth;
+                const currentSidebarWidth = sidebar.offsetWidth; 
+                const xMax = (currentSidebarWidth + 120 + (projectItems.length * itemWidth) + 400) - window.innerWidth;
                 targetX = Math.max(0, Math.min(targetX, xMax));
                 currentX = lerp(currentX, targetX, 0.07);
                 sliderInner.style.transform = `translateX(${-currentX}px)`;
@@ -397,6 +401,7 @@
                 projectItems.forEach(item => {
                     item.style.transform = 'none';
                     item.querySelector('.project-img').style.transform = 'none';
+                    item.querySelectorAll('.parallax-element').forEach(el => el.style.transform = 'none');
                 });
             }
             requestAnimationFrame(animate);
