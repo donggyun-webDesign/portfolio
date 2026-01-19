@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ELEMENT | Metallic Experience Lab</title>
+    <title>ELEMENT CARD | Website</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="img/favicon.png" type="image/png">
     <style>
         /* Smooth Scrolling Enable */
         html {
@@ -20,69 +21,97 @@
             overflow-x: hidden;
         }
         
-        .perspective-container {
-            perspective: 2000px;
+        /* [DESIGN SYSTEM] Fixed Aspect Ratio Scaling for Hero Card */
+        .card-wrapper {
+            container-type: inline-size;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
         }
 
-        /* Metallic Base */
+        .perspective-container {
+            perspective: 2000px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Metallic Base - cqw 기반 절대 비율 유지 */
         .interactive-card {
             position: relative;
             transition: transform 0.1s ease-out, background 0.5s ease;
             transform-style: preserve-3d;
             box-shadow: 0 40px 80px -20px rgba(0,0,0,0.4);
-            border-radius: 20px;
+            border-radius: 4cqw;
             overflow: hidden; 
+            width: 100%;
+            aspect-ratio: 1.58 / 1;
+            padding: 9cqw;
+            /* Specular Glare Variables 초기화 */
+            --tx: 0; 
+            --ty: 0; 
+            --rotate: 45deg;
         }
 
-        /* Brushed Metal Texture Layer */
+        /* Horizontal Hairline Texture */
         .brushed-texture {
             position: absolute;
             inset: 0;
-            opacity: 0.12;
+            opacity: 0.18;
             pointer-events: none;
             background-image: repeating-linear-gradient(
-                45deg,
-                rgba(0,0,0,0.1) 0px,
-                rgba(0,0,0,0.1) 1px,
+                0deg,
+                rgba(255,255,255,0.1) 0px,
+                rgba(255,255,255,0.1) 1px,
                 transparent 1px,
                 transparent 2px
             );
             mix-blend-mode: overlay;
+            z-index: 1;
         }
 
-        /* CNC Milled Edge Effect */
         .card-edge {
             position: absolute;
             inset: 0;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-bottom: 2px solid rgba(0,0,0,0.3);
-            border-right: 2px solid rgba(0,0,0,0.2);
-            border-radius: 20px;
+            border: 0.2cqw solid rgba(255,255,255,0.1);
+            border-bottom: 0.4cqw solid rgba(0,0,0,0.3);
+            border-right: 0.4cqw solid rgba(0,0,0,0.2);
+            border-radius: 4cqw;
             pointer-events: none;
             z-index: 5;
         }
 
-        /* Specular Roughness System */
+        /* [GLARE SYSTEM] Sharp Specular restoration */
         .card-glare {
             position: absolute;
-            width: 1000%; 
-            height: 400%; 
-            top: -150%;
-            left: -450%; 
+            width: 300%; 
+            height: 300%; 
+            top: -100%;
+            left: -100%; 
             background: linear-gradient(
-                90deg,
-                rgba(255,255,255,0) 30%, 
-                rgba(255,255,255,0.5) 50%, 
-                rgba(255,255,255,0) 70%
+                var(--rotate, 45deg),
+                rgba(255,255,255,0) 25%, 
+                rgba(255,255,255,0.8) 50%, 
+                rgba(255,255,255,0) 75%
             );
-            transform: translate(calc(var(--tx) * 1px), calc(var(--ty) * 1px)) rotate(var(--rotate));
+            transform: translate(calc(var(--tx) * 1px), calc(var(--ty) * 1px));
             pointer-events: none;
             z-index: 2;
             opacity: 0;
             mix-blend-mode: plus-lighter;
-            transition: opacity 0.6s ease;
-            filter: blur(30px);
+            transition: opacity 0.4s ease;
+            filter: blur(40px);
         }
+
+        /* Card Internals Scaling */
+        .card-chip { width: 12.5cqw; height: 9.8cqw; border-radius: 1.5cqw; }
+        .card-number { font-size: 5.5cqw; letter-spacing: 0.3em; margin-bottom: 5.5cqw; }
+        .label-tiny { font-size: 2cqw; letter-spacing: 0.2em; margin-bottom: 0.8cqw; }
+        .text-active { font-size: 2.8cqw; }
+        .holder-name { font-size: 3.2cqw; letter-spacing: 0.15em; }
+        .brand-logo-small { font-size: 6.8cqw; letter-spacing: -0.05em; }
 
         /* Modern Grid Accordion */
         .accordion-content {
@@ -91,140 +120,99 @@
             transition: grid-template-rows 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
             opacity: 0;
         }
-
-        .benefit-card.active .accordion-content {
-            grid-template-rows: 1fr;
-            opacity: 1;
-        }
-
-        .accordion-inner {
-            overflow: hidden;
-            transform: translateY(10px);
-            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), padding 1.2s ease;
-        }
-
-        .benefit-card.active .accordion-inner {
-            transform: translateY(0);
-            padding-top: 1.5rem;
-            padding-bottom: 0.5rem;
-        }
-
-        .arrow-icon {
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .benefit-card.active .arrow-icon {
-            transform: rotate(180deg);
-        }
+        .benefit-card.active .accordion-content { grid-template-rows: 1fr; opacity: 1; }
+        .accordion-inner { overflow: hidden; transform: translateY(10px); transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .benefit-card.active .accordion-inner { transform: translateY(0); padding-top: 1.5rem; }
+        .arrow-icon { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .benefit-card.active .arrow-icon { transform: rotate(180deg); }
 
         /* UI Elements */
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 4px;
-            background: #e5e7eb;
-            border-radius: 2px;
-            outline: none;
-        }
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: #e5e7eb; border-radius: 2px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: #000; border-radius: 50%; cursor: pointer; }
 
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #000;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: scale 0.2s ease;
+        .benefit-card { 
+            transition: background-color 0.4s ease, transform 0.4s ease;
+            min-height: 380px;
         }
+        .benefit-card:hover:not(.active) { background-color: #f2f2f7; transform: translateY(-5px); }
 
-        .benefit-card {
-            transition: background-color 0.4s cubic-bezier(0.15, 0.83, 0.66, 1), transform 0.4s ease;
-        }
-        .benefit-card:hover:not(.active) {
-            background-color: #f9f9fb;
-            transform: translateY(-5px);
-        }
-
-        .edition-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .edition-btn.active {
-            box-shadow: 0 0 0 2px white, 0 0 0 4px #2563eb;
-            transform: scale(1.1);
-        }
+        .edition-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .edition-btn.active { box-shadow: 0 0 0 2px white, 0 0 0 4px #2563eb; transform: scale(1.1); }
     </style>
 </head>
 <body class="bg-[#f2f2f7]">
 
     <!-- Nav -->
     <nav class="fixed w-full z-50 bg-white/70 backdrop-blur-xl border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <div class="text-xl font-black tracking-tighter italic text-blue-600">ELEMENT.</div>
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+            <div class="text-lg md:text-xl font-black tracking-tighter italic text-blue-600">ELEMENT.</div>
             <div class="hidden md:flex space-x-8 text-[13px] font-semibold text-gray-500">
                 <a href="#lab" class="hover:text-black transition-colors">체험존</a>
                 <a href="#benefits" class="hover:text-black transition-colors">핵심기능</a>
                 <a href="#calculator" class="hover:text-black transition-colors">리워드</a>
             </div>
-            <button class="bg-black text-white px-5 py-2 rounded-full text-xs font-bold hover:scale-105 transition-transform">
+            <button class="bg-black text-white px-4 md:px-5 py-2 rounded-full text-[10px] md:text-xs font-bold hover:scale-105 transition-transform">
                 카드 신청하기
             </button>
         </div>
     </nav>
 
     <!-- Section 1: Hero Lab -->
-    <section id="lab" class="pt-32 pb-32 px-6">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            
-            <!-- Left: Edition Info -->
-            <div class="text-left">
-                <span class="inline-block px-3 py-1 bg-gray-200 text-gray-600 text-[10px] font-bold tracking-widest uppercase rounded mb-6">Absolute Element</span>
-                <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1]">
+    <section id="lab" class="pt-24 pb-16 md:pt-40 md:pb-32 px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center text-left">
+            <div class="order-2 lg:order-1">
+                <span class="inline-block px-3 py-1 bg-gray-200 text-gray-600 text-[10px] font-bold tracking-widest uppercase rounded mb-4 md:mb-6">Absolute Element</span>
+                <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6 md:mb-8 leading-[1.1]">
                     The Core <br>Utility.
                 </h1>
-                <p class="text-gray-500 text-lg mb-10 leading-relaxed">
+                <p class="text-gray-500 text-base md:text-lg mb-8 md:mb-10 leading-relaxed max-w-md">
                     본질에 집중한 가장 견고한 도구. <br>
                     당신의 일상을 구성하는 세 가지 ELEMENT를 제안합니다.
                 </p>
-                
-                <div class="mb-10">
-                    <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Edition Selection</div>
+                <div class="mb-8 md:mb-10">
+                    <div class="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Edition Selection</div>
                     <div class="flex gap-4">
-                        <button onclick="setEdition('black')" id="btn-black" class="edition-btn active w-12 h-12 rounded-full bg-[#111] border border-white/10 shadow-lg"></button>
-                        <button onclick="setEdition('silver')" id="btn-silver" class="edition-btn w-12 h-12 rounded-full bg-[#D1D5DB] border border-black/5 shadow-lg"></button>
-                        <button onclick="setEdition('gold')" id="btn-gold" class="edition-btn w-12 h-12 rounded-full bg-[#F5D17E] border border-black/5 shadow-lg"></button>
+                        <button onclick="setEdition('silver')" id="btn-silver" class="edition-btn active w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#D1D5DB] border border-black/5 shadow-lg"></button>
+                        <button onclick="setEdition('gold')" id="btn-gold" class="edition-btn w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#F5D17E] border border-black/5 shadow-lg"></button>
+                        <button onclick="setEdition('black')" id="btn-black" class="edition-btn w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#111] border border-white/10 shadow-lg"></button>
                     </div>
                 </div>
-
-                <div class="text-sm font-bold text-gray-900" id="edition-name">Titanium Midnight Black</div>
+                <div class="text-xs md:text-sm font-bold text-gray-900" id="edition-name">Anodized Liquid Silver</div>
             </div>
 
-            <!-- Right: 3D Card -->
-            <div class="perspective-container flex justify-center" id="card-trigger">
-                <div class="interactive-card w-full max-w-[440px] aspect-[1.58/1] bg-[#111] p-10 flex flex-col justify-between text-white" id="main-card">
-                    <div class="card-edge"></div>
-                    <div class="brushed-texture"></div>
-                    <div class="card-glare" id="glare"></div>
-                    
-                    <div class="flex justify-between items-start relative z-10">
-                        <div id="card-chip" class="w-14 h-11 bg-gradient-to-br from-yellow-100 via-yellow-400 to-yellow-700 rounded-lg relative overflow-hidden border border-black/10">
-                            <div class="absolute inset-0 grid grid-cols-3 gap-[1px] p-[2px] opacity-30">
-                                <div class="bg-black/40 h-full"></div><div class="bg-black/40 h-full"></div><div class="bg-black/40 h-full"></div>
-                                <div class="bg-black/40 h-full"></div><div class="bg-black/40 h-full"></div><div class="bg-black/40 h-full"></div>
+            <!-- Right: Interactive Card -->
+            <div class="card-wrapper order-1 lg:order-2">
+                <div class="perspective-container" id="card-trigger">
+                    <!-- [FIXED INITIAL STATE] Gradient background for Silver by default to enable spec glare -->
+                    <div class="interactive-card flex flex-col justify-between" id="main-card" 
+                         style="background: linear-gradient(135deg, #cbd5e1 0%, #f8fafc 50%, #94a3b8 100%); color: #111827;">
+                        <div class="card-edge"></div>
+                        <div class="brushed-texture"></div>
+                        <div class="card-glare" id="glare"></div>
+                        
+                        <div class="flex justify-between items-start relative z-10">
+                            <div id="card-chip" class="card-chip relative overflow-hidden border border-black/10"
+                                 style="background: linear-gradient(135deg, #94a3b8 0%, #475569 100%);">
+                                <div class="absolute inset-0 grid grid-cols-3 gap-[1px] p-[2px] opacity-30">
+                                    <div class="bg-black/40 h-full"></div><div class="bg-black/40 h-full"></div><div class="bg-black/40 h-full"></div>
+                                    <div class="bg-black/40 h-full"></div><div class="bg-black/40 h-full"></div><div class="bg-black/40 h-full"></div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="label-tiny font-bold opacity-40 uppercase mb-1">Status</div>
+                                <div class="text-active font-bold tracking-tighter text-blue-500">ACTIVE</div>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <div class="text-[9px] font-bold opacity-40 tracking-[0.2em] uppercase mb-1">Status</div>
-                            <div class="text-xs font-bold tracking-tighter text-blue-500">ACTIVE</div>
-                        </div>
-                    </div>
 
-                    <div class="relative z-10">
-                        <div class="text-2xl tracking-[0.3em] font-light mb-6 opacity-90">4510 5233 1104 2026</div>
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <div class="text-[9px] font-bold tracking-widest uppercase opacity-40 mb-1">Card Holder</div>
-                                <div class="text-sm font-bold tracking-widest uppercase">DONGGYUN HAN</div>
+                        <div class="relative z-10">
+                            <div class="card-number font-light opacity-90">4510 5233 1104 2026</div>
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <div class="label-tiny font-bold uppercase opacity-40 mb-1">Card Holder</div>
+                                    <div class="holder-name font-bold uppercase">DONGGYUN HAN</div>
+                                </div>
+                                <div class="italic font-black brand-logo-small tracking-tighter opacity-80" id="card-brand-logo">ELEMENT.</div>
                             </div>
-                            <div class="italic font-black text-3xl tracking-tighter opacity-80" id="card-brand-logo">ELEMENT.</div>
                         </div>
                     </div>
                 </div>
@@ -232,76 +220,70 @@
         </div>
     </section>
 
-    <!-- Section 2: Essential Elements (Benefits) - WHITE Background -->
-    <section id="benefits" class="py-32 px-6 bg-white border-y border-gray-100">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-20 text-left">
+    <!-- Section 2: Essential Elements -->
+    <section id="benefits" class="py-20 md:py-32 px-6 bg-white border-y border-gray-100">
+        <div class="max-w-7xl mx-auto text-left">
+            <div class="mb-12 md:mb-20">
                 <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-[#111]">Essential Elements.</h2>
-                <p class="text-gray-500 font-medium">당신의 라이프스타일을 구성하는 핵심 기능입니다.</p>
+                <p class="text-gray-500 text-sm md:text-base font-medium">당신의 라이프스타일을 구성하는 핵심 기능입니다.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-                <div class="benefit-card p-10 bg-[#f9f9fb] rounded-[32px] border border-gray-100 flex flex-col cursor-pointer" onclick="toggleAccordion(this)">
+                <div class="benefit-card p-8 md:p-10 bg-[#f9f9fb] rounded-[32px] border border-gray-100 flex flex-col cursor-pointer" onclick="toggleAccordion(this)">
                     <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 text-blue-600 shadow-sm">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4">Unlimited Reward</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">제한 없는 리워드 시스템을 통해<br>일상의 소비 효율을 극대화</p>
+                    <h3 class="text-2xl font-bold mb-4 text-[#111]">Unlimited Reward</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed flex-grow">제한 없는 리워드로 소비의 효율을 극대화</p>
                     <div class="accordion-content border-t border-gray-200">
                         <div class="accordion-inner">
                             <ul class="space-y-3 text-xs text-gray-400 leading-relaxed">
                                 <li class="flex items-start gap-2"><span class="text-blue-500">•</span> 국내외 전 가맹점 결제 시 실적 조건 없이 적립</li>
                                 <li class="flex items-start gap-2"><span class="text-blue-500">•</span> 적립 한도 및 횟수 제한 없는 무제한 캐시백</li>
-                                <li class="flex items-start gap-2"><span class="text-blue-500">•</span> 익월 결제일에 카드 대금에서 자동 차감</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="mt-8 flex items-center justify-between text-xs font-bold text-blue-600 uppercase tracking-widest">
+                    <div class="mt-8 flex items-center justify-between text-[10px] font-bold text-blue-600 uppercase tracking-widest">
                         <span class="btn-text">Details</span>
                         <svg class="arrow-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                 </div>
 
-                <div class="benefit-card p-10 bg-[#f9f9fb] rounded-[32px] border border-gray-100 flex flex-col cursor-pointer" onclick="toggleAccordion(this)">
+                <div class="benefit-card p-8 md:p-10 bg-[#f9f9fb] rounded-[32px] border border-gray-100 flex flex-col cursor-pointer" onclick="toggleAccordion(this)">
                     <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 text-purple-600 shadow-sm">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10" stroke-width="1.5" />
-                            <path stroke-width="1.5" d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
-                        </svg>
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="1.5" /><path stroke-width="1.5" d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" /></svg>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4">Global Access</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">경계 없는 이동을 위한 전 세계<br>1,000개 이상의 공항 라운지 이용</p>
+                    <h3 class="text-2xl font-bold mb-4 text-[#111]">Global Access</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed flex-grow">경계 없는 이동을 위한 전 세계 1,000개 공항 라운지 이용.</p>
                     <div class="accordion-content border-t border-gray-200">
                         <div class="accordion-inner">
                             <ul class="space-y-3 text-xs text-gray-400 leading-relaxed">
-                                <li class="flex items-start gap-2"><span class="text-purple-500">•</span> 더 라운지 멤버스 앱을 통한 전 세계 라운지 이용권 제공</li>
-                                <li class="flex items-start gap-2"><span class="text-purple-500">•</span> 본인 및 동반인 포함 연간 최대 5회 무료 이용</li>
-                                <li class="flex items-start gap-2"><span class="text-purple-500">•</span> 해외 이용 수수료 1.2% 전액 면제 혜택</li>
+                                <li class="flex items-start gap-2"><span class="text-purple-500">•</span> 더 라운지 멤버스 앱을 통한 무료 이용권 제공</li>
+                                <li class="flex items-start gap-2"><span class="text-purple-500">•</span> 본인 및 동반인 포함 연간 최대 5회 무료</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="mt-8 flex items-center justify-between text-xs font-bold text-blue-600 uppercase tracking-widest">
+                    <div class="mt-8 flex items-center justify-between text-[10px] font-bold text-blue-600 uppercase tracking-widest">
                         <span class="btn-text">Details</span>
                         <svg class="arrow-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                 </div>
 
-                <div class="benefit-card p-10 bg-[#f9f9fb] rounded-[32px] border border-gray-100 flex flex-col cursor-pointer" onclick="toggleAccordion(this)">
-                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 text-orange-500 shadow-sm">
+                <div class="benefit-card p-8 md:p-10 bg-[#f9f9fb] rounded-[32px] border border-gray-100 flex flex-col cursor-pointer" onclick="toggleAccordion(this)">
+                    <div class="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center mb-8 text-orange-500 shadow-sm">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4">Security Layer</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">데이터 보호를 위한 넘버리스 설계와<br>실시간 다중 보안 체계 적용</p>
+                    <h3 class="text-2xl font-bold mb-4 text-[#111]">Security Layer</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed flex-grow">데이터 보호를 위한 넘버리스 디자인과 다중 보안 체계.</p>
                     <div class="accordion-content border-t border-gray-200">
                         <div class="accordion-inner">
                             <ul class="space-y-3 text-xs text-gray-400 leading-relaxed">
-                                <li class="flex items-start gap-2"><span class="text-orange-500">•</span> 실물 카드 번호 및 CVC가 없는 미니멀 보안 설계</li>
-                                <li class="flex items-start gap-2"><span class="text-orange-500">•</span> 앱 내 실시간 결제 승인/거부 및 일시 정지 기능</li>
-                                <li class="flex items-start gap-2"><span class="text-orange-500">•</span> AI 기반 이상금융거래 탐지 시스템 24시간 작동</li>
+                                <li class="flex items-start gap-2"><span class="text-orange-500">•</span> 실물 카드 번호 및 CVC가 없는 미니멀 설계</li>
+                                <li class="flex items-start gap-2"><span class="text-orange-500">•</span> AI 기반 이상금융거래 탐지 시스템 작동</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="mt-8 flex items-center justify-between text-xs font-bold text-blue-600 uppercase tracking-widest">
+                    <div class="mt-8 flex items-center justify-between text-[10px] font-bold text-blue-600 uppercase tracking-widest">
                         <span class="btn-text">Details</span>
                         <svg class="arrow-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
@@ -310,46 +292,42 @@
         </div>
     </section>
 
-    <!-- Section 3: Reward Simulator - GRAY Background -->
-    <section id="calculator" class="py-32 px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-20 text-left">
+    <!-- Section 3: Reward Simulator -->
+    <section id="calculator" class="py-20 md:py-32 px-6">
+        <div class="max-w-7xl mx-auto text-left">
+            <div class="mb-12 md:mb-20">
                 <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-[#111]">Reward Simulator.</h2>
-                <p class="text-gray-500 font-medium">사용 금액에 따른 월간 리워드 수치를 확인하십시오.</p>
+                <p class="text-gray-500 text-sm md:text-base font-medium">사용 금액에 따른 월간 리워드 수치를 확인하십시오.</p>
             </div>
-
             <div class="bg-white rounded-[40px] p-8 md:p-12 shadow-sm border border-gray-100">
                 <div class="mb-12">
                     <div class="flex justify-between items-end mb-6">
-                        <label class="font-bold text-gray-400 uppercase text-xs tracking-widest">Monthly Spend</label>
-                        <div class="text-4xl font-black text-[#111]"><span id="spend-value">1,500,000</span>원</div>
+                        <label class="font-bold text-gray-400 uppercase text-[10px] md:text-xs tracking-widest">Monthly Spend</label>
+                        <div class="text-2xl md:text-4xl font-black text-[#111]"><span id="spend-value">1,500,000</span>원</div>
                     </div>
                     <input type="range" id="spend-slider" min="0" max="10000000" step="100000" value="1500000" class="cursor-pointer">
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                     <div class="bg-[#f9f9fb] p-8 rounded-3xl border border-gray-50">
-                        <div class="text-xs font-bold text-blue-600 mb-2 uppercase tracking-widest">Monthly Reward</div>
-                        <div class="text-3xl font-bold mb-2 text-[#111]"><span id="earn-value">30,000</span>원</div>
-                        <p class="text-xs text-gray-400">2% 무제한 캐시백 기준</p>
+                        <div class="text-[10px] md:text-xs font-bold text-blue-600 mb-2 uppercase tracking-widest">Monthly Reward</div>
+                        <div class="text-xl md:text-3xl font-bold mb-1 md:mb-2 text-[#111]"><span id="earn-value">30,000</span>원</div>
+                        <p class="text-[10px] md:text-xs text-gray-400">2% 무제한 캐시백 기준</p>
                     </div>
                     <div class="bg-[#f9f9fb] p-8 rounded-3xl border border-gray-50">
-                        <div class="text-xs font-bold text-purple-600 mb-2 uppercase tracking-widest">Annual Total</div>
-                        <div class="text-3xl font-bold mb-2 text-[#111]"><span id="annual-value">360,000</span>원</div>
-                        <p class="text-xs text-gray-400">1년 기준 리워드 합계</p>
+                        <div class="text-[10px] md:text-xs font-bold text-purple-600 mb-2 uppercase tracking-widest">Annual Total</div>
+                        <div class="text-xl md:text-3xl font-bold mb-1 md:mb-2 text-[#111]"><span id="annual-value">360,000</span>원</div>
+                        <p class="text-[10px] md:text-xs text-gray-400">1년 기준 리워드 합계</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Closing Section: Centered + CTA Button -->
-    <section class="py-48 px-6 bg-white border-t border-gray-100 text-center">
+    <!-- Closing Section -->
+    <section class="py-32 md:py-48 px-6 bg-white border-t border-gray-100 text-center">
         <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl md:text-6xl font-black tracking-tighter text-[#111] mb-8">도구의 가치는 <br>결과로 증명됩니다.</h2>
-            <p class="text-gray-400 font-medium tracking-widest uppercase text-xs mb-16">Essential utility for your lifestyle.</p>
-            
-            <!-- New Premium CTA Button -->
+            <h2 class="text-3xl md:text-6xl font-black tracking-tighter text-[#111] mb-8">도구의 가치는 <br class="md:hidden">결과로 증명됩니다.</h2>
+            <p class="text-gray-400 font-medium tracking-widest uppercase text-[10px] md:text-xs mb-16">Essential utility for your lifestyle.</p>
             <button class="px-12 py-5 bg-black text-white rounded-full font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-2xl tracking-widest uppercase">
                 Select Your Element
             </button>
@@ -358,7 +336,7 @@
 
     <!-- Footer -->
     <footer class="py-20 px-6 bg-white border-t border-gray-100">
-        <div class="max-w-7xl mx-auto flex flex-col items-start text-[10px] text-gray-400 uppercase tracking-tighter text-left">
+        <div class="max-w-7xl mx-auto flex flex-col items-start text-[9px] md:text-[10px] text-gray-400 uppercase tracking-tighter text-left">
             <div class="text-xl font-black italic mb-6 text-black">ELEMENT.</div>
             <p class="leading-relaxed max-w-xs uppercase tracking-tighter">
                 준법감시인 심의필 제2026-1024호 <br>
@@ -369,41 +347,18 @@
     </footer>
 
     <script>
-        // 1. Multi-Accordion Logic
+        // 1. Accordion Logic
         function toggleAccordion(element) {
             const isActive = element.classList.contains('active');
-            if (isActive) {
-                element.classList.remove('active');
-                element.querySelector('.btn-text').innerText = 'Details';
-            } else {
-                element.classList.add('active');
-                element.querySelector('.btn-text').innerText = 'Close';
-            }
+            element.classList.toggle('active');
+            element.querySelector('.btn-text').innerText = isActive ? 'Details' : 'Close';
         }
 
         // 2. Edition Configuration
         const editions = {
-            black: {
-                name: 'Titanium Midnight Black',
-                bg: 'linear-gradient(135deg, #0a0a0a 0%, #262626 50%, #050505 100%)',
-                text: '#ffffff',
-                chip: 'linear-gradient(135deg, #fef08a 0%, #ca8a04 100%)',
-                border: 'rgba(255,255,255,0.1)'
-            },
-            silver: {
-                name: 'Anodized Liquid Silver',
-                bg: 'linear-gradient(135deg, #cbd5e1 0%, #f8fafc 50%, #94a3b8 100%)',
-                text: '#111827',
-                chip: 'linear-gradient(135deg, #94a3b8 0%, #475569 100%)',
-                border: 'rgba(0,0,0,0.05)'
-            },
-            gold: {
-                name: '24K Brushed Gold Edition',
-                bg: 'linear-gradient(135deg, #fde68a 0%, #fbbf24 50%, #b45309 100%)',
-                text: '#451a03',
-                chip: 'linear-gradient(135deg, #ffffff 0%, #fde68a 100%)',
-                border: 'rgba(0,0,0,0.05)'
-            }
+            silver: { name: 'Anodized Liquid Silver', bg: 'linear-gradient(135deg, #cbd5e1 0%, #f8fafc 50%, #94a3b8 100%)', text: '#111827', chip: 'linear-gradient(135deg, #94a3b8 0%, #475569 100%)' },
+            gold: { name: '24K Brushed Gold Edition', bg: 'linear-gradient(135deg, #fde68a 0%, #fbbf24 50%, #b45309 100%)', text: '#451a03', chip: 'linear-gradient(135deg, #ffffff 0%, #fde68a 100%)' },
+            black: { name: 'Titanium Midnight Black', bg: 'linear-gradient(135deg, #0a0a0a 0%, #262626 50%, #050505 100%)', text: '#ffffff', chip: 'linear-gradient(135deg, #fef08a 0%, #ca8a04 100%)' }
         };
 
         function setEdition(type) {
@@ -411,57 +366,58 @@
             const card = document.getElementById('main-card');
             const chip = document.getElementById('card-chip');
             const nameDisplay = document.getElementById('edition-name');
-            
-            card.style.background = config.bg;
+            card.style.background = config.bg; 
             card.style.color = config.text;
-            chip.style.background = config.chip;
+            chip.style.background = config.chip; 
             nameDisplay.innerText = config.name;
-
             document.querySelectorAll('.edition-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`btn-${type}`).classList.add('active');
         }
 
-        // 3. 3D Tilt Interaction
+        // 3. [GLARE RESTORATION]
         const card = document.getElementById('main-card');
         const trigger = document.getElementById('card-trigger');
         const glare = document.getElementById('glare');
+        const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-        trigger.addEventListener('mousemove', (e) => {
-            const rect = trigger.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const px = x / rect.width;
-            const py = y / rect.height;
-            const rotateX = (0.5 - py) * 20;
-            const rotateY = (px - 0.5) * 20;
-            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            const tx = (px * rect.width) - (rect.width / 2); 
-            const ty = (py * rect.height) - (rect.height / 2);
-            const rot = (px * 30) + 30;
-            glare.style.setProperty('--tx', tx);
-            glare.style.setProperty('--ty', ty);
-            glare.style.setProperty('--rotate', `${rot}deg`);
-            glare.style.opacity = '0.9';
-        });
-
-        trigger.addEventListener('mouseleave', () => {
-            card.style.transform = `rotateX(0deg) rotateY(0deg)`;
-            glare.style.opacity = '0';
-        });
+        if (!isTouch) {
+            trigger.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect(); 
+                const x = e.clientX - rect.left; 
+                const y = e.clientY - rect.top;
+                
+                const px = x / rect.width; 
+                const py = y / rect.height;
+                
+                // Tilt logic
+                const rotateX = (0.5 - py) * 20;
+                const rotateY = (px - 0.5) * 20;
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                
+                // Glare coordinate math
+                const tx = x - (rect.width / 2);
+                const ty = y - (rect.height / 2);
+                const rot = (px * 60) + 15; // 15deg ~ 75deg range for dynamic specular
+                
+                card.style.setProperty('--tx', tx);
+                card.style.setProperty('--ty', ty);
+                card.style.setProperty('--rotate', `${rot}deg`);
+                glare.style.opacity = '1';
+            });
+            
+            trigger.addEventListener('mouseleave', () => {
+                card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+                glare.style.opacity = '0';
+            });
+        }
 
         // 4. Calculator Logic
         const slider = document.getElementById('spend-slider');
-        const spendVal = document.getElementById('spend-value');
-        const earnVal = document.getElementById('earn-value');
-        const annualVal = document.getElementById('annual-value');
-
         slider.addEventListener('input', (e) => {
             const val = parseInt(e.target.value);
-            const monthlyEarn = val * 0.02;
-            const annualEarn = monthlyEarn * 12;
-            spendVal.innerText = val.toLocaleString();
-            earnVal.innerText = monthlyEarn.toLocaleString();
-            annualVal.innerText = annualEarn.toLocaleString();
+            document.getElementById('spend-value').innerText = val.toLocaleString();
+            document.getElementById('earn-value').innerText = (val * 0.02).toLocaleString();
+            document.getElementById('annual-value').innerText = (val * 0.02 * 12).toLocaleString();
         });
     </script>
 </body>
