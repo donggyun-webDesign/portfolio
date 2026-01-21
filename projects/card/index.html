@@ -3,170 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ELEMENT CARD | Website</title>
+    <title>ELEMENT | Metallic Experience Lab</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="img/favicon.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* Smooth Scrolling Enable */
-        html {
-            scroll-behavior: smooth;
+        :root {
+            /* [BRAND COLOR SYSTEM] */
+            --key-color: #7dd3fc;
+            --key-color-dark: #0ea5e9;
+            --bg-color: #f2f2f7;
+            --card-shadow: rgba(0,0,0,0.3);
+            /* Dynamic Pattern Props */
+            --pattern-color: rgba(0,0,0,0.06);
+            --pattern-mode: multiply;
         }
+
+        html { scroll-behavior: smooth; }
         
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #ffffff;
+            background-color: var(--bg-color);
             color: #1d1d1f;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(0,0,0,0.03) 1.5px, transparent 0),
+                linear-gradient(to right, rgba(0,0,0,0.015) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,0,0,0.015) 1px, transparent 1px);
+            background-size: 24px 24px, 48px 48px, 48px 48px;
         }
         
-        /* [DESIGN SYSTEM] Fixed Aspect Ratio Scaling for Hero Card */
-        .card-wrapper {
-            container-type: inline-size;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .perspective-container {
-            perspective: 2000px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        /* Metallic Base - cqw 기반 절대 비율 유지 */
+        /* [DESIGN SYSTEM] Portrait Card */
+        .card-wrapper { container-type: inline-size; width: 100%; max-width: 360px; margin: 0 auto; position: relative; }
+        .perspective-container { perspective: 2000px; width: 100%; display: flex; justify-content: center; cursor: pointer; }
         .interactive-card {
-            position: relative;
-            transition: transform 0.1s ease-out, background 0.5s ease;
-            transform-style: preserve-3d;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.4);
-            border-radius: 4cqw;
-            overflow: hidden; 
-            width: 100%;
-            aspect-ratio: 1.58 / 1;
-            padding: 9cqw;
-            /* Specular Glare Variables 초기화 */
-            --tx: 0; 
-            --ty: 0; 
-            --rotate: 45deg;
+            position: relative; transition: transform 0.1s ease-out, background 0.5s ease; transform-style: preserve-3d;
+            box-shadow: 0 50px 100px -20px var(--card-shadow); border-radius: 5cqw; overflow: hidden; 
+            width: 100%; aspect-ratio: 1 / 1.58; padding: 10cqw;
         }
 
-        /* Horizontal Hairline Texture */
         .brushed-texture {
-            position: absolute;
-            inset: 0;
-            opacity: 0.18;
-            pointer-events: none;
-            background-image: repeating-linear-gradient(
-                0deg,
-                rgba(255,255,255,0.1) 0px,
-                rgba(255,255,255,0.1) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            mix-blend-mode: overlay;
-            z-index: 1;
+            position: absolute; inset: 0; opacity: 0.25; pointer-events: none;
+            background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.1) 1px, transparent 1px, transparent 2.5px);
+            mix-blend-mode: overlay; z-index: 2;
         }
 
-        .card-edge {
-            position: absolute;
-            inset: 0;
-            border: 0.2cqw solid rgba(255,255,255,0.1);
-            border-bottom: 0.4cqw solid rgba(0,0,0,0.3);
-            border-right: 0.4cqw solid rgba(0,0,0,0.2);
-            border-radius: 4cqw;
-            pointer-events: none;
-            z-index: 5;
+        .card-internal-pattern {
+            position: absolute; inset: 0; opacity: 0.5; pointer-events: none;
+            background-image: 
+                linear-gradient(30deg, var(--pattern-color) 12%, transparent 12.5%, transparent 87%, var(--pattern-color) 87.5%, var(--pattern-color)),
+                linear-gradient(150deg, var(--pattern-color) 12%, transparent 12.5%, transparent 87%, var(--pattern-color) 87.5%, var(--pattern-color)),
+                linear-gradient(30deg, var(--pattern-color) 12%, transparent 12.5%, transparent 87%, var(--pattern-color) 87.5%, var(--pattern-color)),
+                linear-gradient(150deg, var(--pattern-color) 12%, transparent 12.5%, transparent 87%, var(--pattern-color) 87.5%, var(--pattern-color)),
+                linear-gradient(60deg, var(--pattern-color) 25%, transparent 25.5%, transparent 75%, var(--pattern-color) 75%, var(--pattern-color)),
+                linear-gradient(60deg, var(--pattern-color) 25%, transparent 25.5%, transparent 75%, var(--pattern-color) 75%, var(--pattern-color));
+            background-size: 14cqw 24cqw;
+            background-position: 0 0, 0 0, 7cqw 12cqw, 7cqw 12cqw, 0 0, 7cqw 12cqw;
+            mix-blend-mode: var(--pattern-mode); z-index: 1;
         }
 
-        /* [GLARE SYSTEM] Sharp Specular restoration */
+        .card-edge { position: absolute; inset: 0; border: 0.3cqw solid rgba(255,255,255,0.15); border-bottom: 0.6cqw solid rgba(0,0,0,0.3); border-radius: 5cqw; pointer-events: none; z-index: 5; }
         .card-glare {
-            position: absolute;
-            width: 300%; 
-            height: 300%; 
-            top: -100%;
-            left: -100%; 
-            background: linear-gradient(
-                var(--rotate, 45deg),
-                rgba(255,255,255,0) 25%, 
-                rgba(255,255,255,0.8) 50%, 
-                rgba(255,255,255,0) 75%
-            );
+            position: absolute; width: 300%; height: 300%; top: -100%; left: -100%; 
+            background: linear-gradient(var(--rotate, 45deg), rgba(255,255,255,0) 40%, var(--glare-color) 50%, rgba(255,255,255,0) 60%);
             transform: translate(calc(var(--tx) * 1px), calc(var(--ty) * 1px));
-            pointer-events: none;
-            z-index: 2;
-            opacity: 0;
-            mix-blend-mode: plus-lighter;
-            transition: opacity 0.4s ease;
-            filter: blur(40px);
+            pointer-events: none; z-index: 3; opacity: var(--glare-opacity); mix-blend-mode: plus-lighter; filter: blur(15px);
         }
 
-        /* Card Internals Scaling */
-        .card-chip { width: 12.5cqw; height: 9.8cqw; border-radius: 1.5cqw; }
-        .card-number { font-size: 5.5cqw; letter-spacing: 0.3em; margin-bottom: 5.5cqw; }
-        .label-tiny { font-size: 2cqw; letter-spacing: 0.2em; margin-bottom: 0.8cqw; }
-        .text-active { font-size: 2.8cqw; }
-        .holder-name { font-size: 3.2cqw; letter-spacing: 0.15em; }
-        .brand-logo-small { font-size: 6.8cqw; letter-spacing: -0.05em; }
-
-        /* Modern Grid Accordion */
-        .accordion-content {
-            display: grid;
-            grid-template-rows: 0fr;
-            transition: grid-template-rows 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
-            opacity: 0;
+        .card-number { font-size: 5cqw; letter-spacing: 0.2em; margin-top: auto; margin-bottom: 4cqw; font-weight: 300; }
+        .label-tiny { font-size: 2.2cqw; letter-spacing: 0.2em; margin-bottom: 1cqw; opacity: 0.5; font-weight: 700; text-transform: uppercase; }
+        .text-active { font-size: 3cqw; color: var(--key-color-dark); font-weight: 800; }
+        .brand-logo-small { 
+            font-size: 8cqw; transform: rotate(-90deg) translateX(100%);
+            transform-origin: right bottom; position: absolute; right: 8cqw; bottom: 25cqw; opacity: 0.8; font-weight: 900;
         }
+
+        /* [ESSENTIAL ELEMENTS] */
+        .benefit-card { 
+            transition: background-color 0.4s ease, transform 0.4s ease, border-color 0.4s ease; 
+            min-height: 440px; background-color: rgba(255,255,255,0.7); backdrop-filter: blur(10px); 
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .benefit-card:hover:not(.active) { background-color: #ffffff; transform: translateY(-5px); border-color: var(--key-color); }
+        .accordion-content { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; opacity: 0; }
         .benefit-card.active .accordion-content { grid-template-rows: 1fr; opacity: 1; }
-        .accordion-inner { overflow: hidden; transform: translateY(10px); transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
-        .benefit-card.active .accordion-inner { transform: translateY(0); padding-top: 1.5rem; }
-        .arrow-icon { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .accordion-inner { overflow: hidden; }
+        .arrow-icon { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .benefit-card.active .arrow-icon { transform: rotate(180deg); }
 
-        /* UI Elements */
-        input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: #e5e7eb; border-radius: 2px; outline: none; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: #000; border-radius: 50%; cursor: pointer; }
-
-        .benefit-card { 
-            transition: background-color 0.4s ease, transform 0.4s ease;
-            min-height: 380px;
+        /* [HORIZONTAL SCROLL] */
+        .exclusive-section { position: relative; height: 500vh; background: transparent; }
+        .sticky-wrapper { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; overflow: hidden; z-index: 10; }
+        .parallax-bg {
+            position: absolute; inset: 0; background-image: radial-gradient(rgba(0,0,0,0.06) 1.5px, transparent 0);
+            background-size: 60px 60px; opacity: 0.8; z-index: 1; will-change: transform;
         }
-        .benefit-card:hover:not(.active) { background-color: #f2f2f7; transform: translateY(-5px); }
+        .exclusive-title-container {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 5; pointer-events: none; width: 100%; padding: 0 10vw; text-align: left;
+        }
+        .exclusive-title-container h2 {
+            font-size: clamp(5rem, 12vw, 15rem); line-height: 0.85; font-weight: 950;
+            letter-spacing: -0.06em; color: #262626; white-space: nowrap;
+        }
 
-        .edition-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .edition-btn.active { box-shadow: 0 0 0 2px white, 0 0 0 4px #2563eb; transform: scale(1.1); }
+        .horizontal-content { display: flex; gap: 15vw; padding: 0; z-index: 20; will-change: transform; }
+        .horizontal-card {
+            flex-shrink: 0; width: 80vw; max-width: 580px; height: 65vh;
+            background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(40px) saturate(180%) contrast(95%);
+            border: 1.5px solid rgba(255, 255, 255, 0.5); border-radius: 64px;
+            padding: 5rem; display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(255,255,255,0.4);
+            position: relative; overflow: hidden;
+        }
+
+        .number-indicator {
+            font-size: 14rem; font-weight: 950; color: rgba(125, 211, 252, 0.28); 
+            position: absolute; top: -1rem; right: 1.5rem; pointer-events: none; z-index: 1; line-height: 1; letter-spacing: -0.05em;
+        }
+        .card-accent-bar { height: 4px; width: 80px; background: var(--key-color-dark); border-radius: 2px; }
+
+        /* [SIMULATOR & CLOSING STICKY] */
+        .simulator-scroll-parent { position: relative; height: 350vh; }
+        .simulator-sticky-box { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; overflow: hidden; }
+
+        .closing-scroll-parent { position: relative; height: 500vh; }
+        .closing-sticky-box { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .closing-inner-content { will-change: transform, opacity; text-align: center; width: 100%; }
+
+        /* [NEW] Aura Expand Button Styles */
+        .aura-button {
+            position: relative;
+            padding: 1.8rem 4.5rem;
+            background: transparent;
+            color: #111;
+            border: 2px solid #000;
+            border-radius: 100px;
+            font-weight: 950;
+            font-size: 1.2rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .aura-glow-layer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0%;
+            height: 0%;
+            background: var(--key-color);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            filter: blur(20px);
+            opacity: 0;
+            will-change: width, height, opacity, filter;
+            pointer-events: none;
+        }
+
+        .aura-button-text { position: relative; z-index: 10; pointer-events: none; transition: color 0.4s ease; }
+
+        .slider-wrapper { width: 100%; margin: 40px 0; }
+        input[type="range"] { -webkit-appearance: none; width: 100% !important; height: 10px; background: #e5e7eb; border-radius: 5px; outline: none; pointer-events: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 32px; height: 32px; background: #000; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+        .edition-btn { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .edition-btn.active { box-shadow: 0 0 0 2px #f2f2f7, 0 0 0 4px var(--key-color-dark); transform: scale(1.15); }
+        .closing-title { display: block; width: 100%; }
     </style>
 </head>
-<body class="bg-[#f2f2f7]">
+<body>
 
-    <!-- Nav -->
-    <nav class="fixed w-full z-50 bg-white/70 backdrop-blur-xl border-b border-gray-100">
+    <nav class="fixed w-full z-[100] bg-white/70 backdrop-blur-xl border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-            <div class="text-lg md:text-xl font-black tracking-tighter italic text-blue-600">ELEMENT.</div>
-            <div class="hidden md:flex space-x-8 text-[13px] font-semibold text-gray-500">
+            <div class="text-lg md:text-xl font-black tracking-tighter italic text-sky-500">ELEMENT.</div>
+            <div class="hidden md:flex space-x-8 text-[13px] font-semibold text-gray-400">
                 <a href="#lab" class="hover:text-black transition-colors">체험존</a>
                 <a href="#benefits" class="hover:text-black transition-colors">핵심기능</a>
-                <a href="#calculator" class="hover:text-black transition-colors">리워드</a>
+                <a href="#exclusive" class="hover:text-black transition-colors">프리미엄</a>
+                <a href="#calculator-trigger" class="hover:text-black transition-colors">리워드</a>
             </div>
-            <button class="bg-black text-white px-4 md:px-5 py-2 rounded-full text-[10px] md:text-xs font-bold hover:scale-105 transition-transform">
+            <button class="bg-black text-white px-4 md:px-5 py-2 rounded-full text-[10px] md:text-xs font-bold hover:bg-gray-800 transition-colors">
                 카드 신청하기
             </button>
         </div>
     </nav>
 
-    <!-- Section 1: Hero Lab -->
+    <!-- Section 1: Hero Lab (FIXED GLARE START) -->
     <section id="lab" class="pt-24 pb-16 md:pt-40 md:pb-32 px-6">
         <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center text-left">
             <div class="order-2 lg:order-1">
-                <span class="inline-block px-3 py-1 bg-gray-200 text-gray-600 text-[10px] font-bold tracking-widest uppercase rounded mb-4 md:mb-6">Absolute Element</span>
-                <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6 md:mb-8 leading-[1.1]">
+                <span class="inline-block px-3 py-1 bg-sky-100 text-sky-600 text-[10px] font-bold tracking-widest uppercase rounded mb-4 md:mb-6 shadow-sm">Absolute Element</span>
+                <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6 md:mb-8 leading-[1.1] text-[#111]">
                     The Core <br>Utility.
                 </h1>
-                <p class="text-gray-500 text-base md:text-lg mb-8 md:mb-10 leading-relaxed max-w-md">
-                    본질에 집중한 가장 견고한 도구. <br>
+                <p class="text-gray-400 text-base md:text-lg mb-8 md:mb-10 leading-relaxed max-w-md">
+                    세로형 플레이트에 응축된 본질. <br>
                     당신의 일상을 구성하는 세 가지 ELEMENT를 제안합니다.
                 </p>
                 <div class="mb-8 md:mb-10">
@@ -177,42 +213,39 @@
                         <button onclick="setEdition('black')" id="btn-black" class="edition-btn w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#111] border border-white/10 shadow-lg"></button>
                     </div>
                 </div>
-                <div class="text-xs md:text-sm font-bold text-gray-900" id="edition-name">Anodized Liquid Silver</div>
+                <div class="text-xs md:text-sm font-bold text-gray-900" id="edition-name">Anodized Liquid Silver Edition</div>
             </div>
 
-            <!-- Right: Interactive Card -->
             <div class="card-wrapper order-1 lg:order-2">
                 <div class="perspective-container" id="card-trigger">
-                    <!-- [FIXED INITIAL STATE] Gradient background for Silver by default to enable spec glare -->
-                    <div class="interactive-card flex flex-col justify-between" id="main-card" 
-                         style="background: linear-gradient(135deg, #cbd5e1 0%, #f8fafc 50%, #94a3b8 100%); color: #111827;">
+                    <!-- [FIX] Start with glare opacity 0 -->
+                    <div class="interactive-card flex flex-col justify-start" id="main-card" 
+                         style="background: linear-gradient(135deg, #cbd5e1 0%, #f8fafc 50%, #94a3b8 100%); color: #111827; --glare-color: rgba(255,255,255,0.85); --glare-spread: 10%; --glare-opacity: 0;">
                         <div class="card-edge"></div>
                         <div class="brushed-texture"></div>
+                        <div id="card-pattern" class="card-internal-pattern"></div>
                         <div class="card-glare" id="glare"></div>
                         
-                        <div class="flex justify-between items-start relative z-10">
-                            <div id="card-chip" class="card-chip relative overflow-hidden border border-black/10"
+                        <div class="flex justify-between items-start relative z-10 w-full">
+                            <div id="card-chip" class="card-chip relative overflow-hidden border border-black/10 shadow-inner"
                                  style="background: linear-gradient(135deg, #94a3b8 0%, #475569 100%);">
                                 <div class="absolute inset-0 grid grid-cols-3 gap-[1px] p-[2px] opacity-30">
-                                    <div class="bg-black/40 h-full"></div><div class="bg-black/40 h-full"></div><div class="bg-black/40 h-full"></div>
-                                    <div class="bg-black/40 h-full"></div><div class="bg-black/40 h-full"></div><div class="bg-black/40 h-full"></div>
+                                    <div class="bg-black h-full"></div><div class="bg-black h-full"></div><div class="bg-black h-full"></div>
+                                    <div class="bg-black h-full"></div><div class="bg-black h-full"></div><div class="bg-black h-full"></div>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <div class="label-tiny font-bold opacity-40 uppercase mb-1">Status</div>
-                                <div class="text-active font-bold tracking-tighter text-blue-500">ACTIVE</div>
+                                <div class="label-tiny font-bold opacity-40 uppercase">Status</div>
+                                <div class="text-active font-bold tracking-tighter">ACTIVE</div>
                             </div>
                         </div>
-
-                        <div class="relative z-10">
+                        <div class="relative z-10 flex-grow flex items-center justify-end">
+                            <div class="italic font-black brand-logo-small tracking-tighter opacity-80" id="card-brand-logo">ELEMENT.</div>
+                        </div>
+                        <div class="relative z-10 mt-auto">
                             <div class="card-number font-light opacity-90">4510 5233 1104 2026</div>
-                            <div class="flex justify-between items-end">
-                                <div>
-                                    <div class="label-tiny font-bold uppercase opacity-40 mb-1">Card Holder</div>
-                                    <div class="holder-name font-bold uppercase">DONGGYUN HAN</div>
-                                </div>
-                                <div class="italic font-black brand-logo-small tracking-tighter opacity-80" id="card-brand-logo">ELEMENT.</div>
-                            </div>
+                            <div class="label-tiny font-bold uppercase opacity-40 mb-1">Card Holder</div>
+                            <div class="holder-name font-bold uppercase">DONGGYUN HAN</div>
                         </div>
                     </div>
                 </div>
@@ -220,204 +253,319 @@
         </div>
     </section>
 
-    <!-- Section 2: Essential Elements -->
-    <section id="benefits" class="py-20 md:py-32 px-6 bg-white border-y border-gray-100">
+    <!-- [HARDCORE SPEC] Essential Elements -->
+    <section id="benefits" class="py-20 md:py-32 px-6 bg-white/80 border-y border-gray-100">
         <div class="max-w-7xl mx-auto text-left">
             <div class="mb-12 md:mb-20">
                 <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-[#111]">Essential Elements.</h2>
-                <p class="text-gray-500 text-sm md:text-base font-medium">당신의 라이프스타일을 구성하는 핵심 기능입니다.</p>
+                <p class="text-gray-400 text-sm md:text-base font-medium">당신의 라이프스타일을 구성하는 압도적인 스펙입니다.</p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-                <div class="benefit-card p-8 md:p-10 bg-[#f9f9fb] rounded-[32px] border border-gray-100 flex flex-col cursor-pointer" onclick="toggleAccordion(this)">
-                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 text-blue-600 shadow-sm">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="benefit-card p-8 md:p-10 rounded-[40px] flex flex-col cursor-pointer" onclick="toggleAccordion(this)">
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 border border-sky-50 shadow-sm text-sky-500">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4 text-[#111]">Unlimited Reward</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed flex-grow">제한 없는 리워드로 소비의 효율을 극대화</p>
-                    <div class="accordion-content border-t border-gray-200">
+                    <h3 class="text-2xl font-bold mb-4 text-[#111]">2.5% M-Point</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">전 가맹점 한도 없는 무제한 적립 시스템.</p>
+                    <div class="accordion-content">
                         <div class="accordion-inner">
-                            <ul class="space-y-3 text-xs text-gray-400 leading-relaxed">
-                                <li class="flex items-start gap-2"><span class="text-blue-500">•</span> 국내외 전 가맹점 결제 시 실적 조건 없이 적립</li>
-                                <li class="flex items-start gap-2"><span class="text-blue-500">•</span> 적립 한도 및 횟수 제한 없는 무제한 캐시백</li>
+                            <div class="h-px bg-gray-100 w-full mb-6"></div>
+                            <ul class="space-y-4 text-xs text-gray-500 font-medium">
+                                <li class="flex items-start gap-3"><span class="text-sky-500 mt-1">•</span> 실적 조건 없이 국내외 전 가맹점 1.5% 기본 적립</li>
+                                <li class="flex items-start gap-3"><span class="text-sky-500 mt-1">•</span> 백화점, 명품관, 하이엔드 다이닝 이용 시 1.0% 추가 적립</li>
+                                <li class="flex items-start gap-3"><span class="text-sky-500 mt-1">•</span> 연간 누적 2,400만원 달성 시 기프트 바우처 20만원 증정</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="mt-8 flex items-center justify-between text-[10px] font-bold text-blue-600 uppercase tracking-widest">
+                    <div class="mt-auto pt-8 flex items-center justify-between text-[11px] font-black uppercase tracking-widest text-sky-600">
                         <span class="btn-text">Details</span>
-                        <svg class="arrow-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        <svg class="arrow-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                 </div>
-
-                <div class="benefit-card p-8 md:p-10 bg-[#f9f9fb] rounded-[32px] border border-gray-100 flex flex-col cursor-pointer" onclick="toggleAccordion(this)">
-                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 text-purple-600 shadow-sm">
+                <div class="benefit-card p-8 md:p-10 rounded-[40px] flex flex-col cursor-pointer" onclick="toggleAccordion(this)">
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 border border-sky-50 shadow-sm text-sky-500">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="1.5" /><path stroke-width="1.5" d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" /></svg>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4 text-[#111]">Global Access</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed flex-grow">경계 없는 이동을 위한 전 세계 1,000개 공항 라운지 이용.</p>
-                    <div class="accordion-content border-t border-gray-200">
+                    <h3 class="text-2xl font-bold mb-4 text-[#111]">1,200 Lounge</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">글로벌 프리미엄 여행을 위한 독보적 혜택.</p>
+                    <div class="accordion-content">
                         <div class="accordion-inner">
-                            <ul class="space-y-3 text-xs text-gray-400 leading-relaxed">
-                                <li class="flex items-start gap-2"><span class="text-purple-500">•</span> 더 라운지 멤버스 앱을 통한 무료 이용권 제공</li>
-                                <li class="flex items-start gap-2"><span class="text-purple-500">•</span> 본인 및 동반인 포함 연간 최대 5회 무료</li>
+                            <div class="h-px bg-gray-100 w-full mb-6"></div>
+                            <ul class="space-y-4 text-xs text-gray-500 font-medium">
+                                <li class="flex items-start gap-3"><span class="text-sky-500 mt-1">•</span> 전 세계 공항 라운지 연 5회 무료 제공 (The Lounge)</li>
+                                <li class="flex items-start gap-3"><span class="text-sky-500 mt-1">•</span> 미슐랭 레스토랑 우선 예약 및 블랙 데스크 지원</li>
+                                <li class="flex items-start gap-3"><span class="text-sky-500 mt-1">•</span> 전 세계 5성급 호텔 무료 발렛파킹 연 12회 제공</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="mt-8 flex items-center justify-between text-[10px] font-bold text-blue-600 uppercase tracking-widest">
+                    <div class="mt-auto pt-8 flex items-center justify-between text-[11px] font-black uppercase tracking-widest text-sky-600">
                         <span class="btn-text">Details</span>
-                        <svg class="arrow-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        <svg class="arrow-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                 </div>
-
-                <div class="benefit-card p-8 md:p-10 bg-[#f9f9fb] rounded-[32px] border border-gray-100 flex flex-col cursor-pointer" onclick="toggleAccordion(this)">
-                    <div class="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center mb-8 text-orange-500 shadow-sm">
+                <div class="benefit-card p-8 md:p-10 rounded-[40px] flex flex-col cursor-pointer" onclick="toggleAccordion(this)">
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-8 border border-sky-50 shadow-sm text-sky-500">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4 text-[#111]">Security Layer</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed flex-grow">데이터 보호를 위한 넘버리스 디자인과 다중 보안 체계.</p>
-                    <div class="accordion-content border-t border-gray-200">
+                    <h3 class="text-2xl font-bold mb-4 text-[#111]">Quantum Shield</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">차세대 바이오 메탈 칩 및 암호화 설계.</p>
+                    <div class="accordion-content">
                         <div class="accordion-inner">
-                            <ul class="space-y-3 text-xs text-gray-400 leading-relaxed">
-                                <li class="flex items-start gap-2"><span class="text-orange-500">•</span> 실물 카드 번호 및 CVC가 없는 미니멀 설계</li>
-                                <li class="flex items-start gap-2"><span class="text-orange-500">•</span> AI 기반 이상금융거래 탐지 시스템 작동</li>
+                            <div class="h-px bg-gray-100 w-full mb-6"></div>
+                            <ul class="space-y-4 text-xs text-gray-500 font-medium">
+                                <li class="flex items-start gap-3"><span class="text-sky-500 mt-1">•</span> 실물 카드 정보 미표기 완전 넘버리스 다이아몬드 커팅 플레이트</li>
+                                <li class="flex items-start gap-3"><span class="text-sky-500 mt-1">•</span> 60초 주기 Dynamic CVC 갱신 및 바이오 인증 결제</li>
+                                <li class="flex items-start gap-3"><span class="text-sky-500 mt-1">•</span> 실시간 AI 이상거래 탐지 및 암호화 칩 온 글래스 탑재</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="mt-8 flex items-center justify-between text-[10px] font-bold text-blue-600 uppercase tracking-widest">
+                    <div class="mt-auto pt-8 flex items-center justify-between text-[11px] font-black uppercase tracking-widest text-sky-600">
                         <span class="btn-text">Details</span>
-                        <svg class="arrow-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        <svg class="arrow-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section 3: Reward Simulator -->
-    <section id="calculator" class="py-20 md:py-32 px-6">
-        <div class="max-w-7xl mx-auto text-left">
-            <div class="mb-12 md:mb-20">
-                <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-[#111]">Reward Simulator.</h2>
-                <p class="text-gray-500 text-sm md:text-base font-medium">사용 금액에 따른 월간 리워드 수치를 확인하십시오.</p>
+    <!-- [EXCLUSIVE] Horizontal Scroll (FIXED PEEK 1/3) -->
+    <section id="exclusive" class="exclusive-section">
+        <div class="sticky-wrapper">
+            <div id="parallax-dots" class="parallax-bg"></div>
+            
+            <div class="exclusive-title-container">
+                <div class="text-sky-600 text-[12px] font-black tracking-[0.5em] uppercase mb-6">Premium Narrative</div>
+                <h2>Unseen <br>Exclusive.</h2>
             </div>
-            <div class="bg-white rounded-[40px] p-8 md:p-12 shadow-sm border border-gray-100">
-                <div class="mb-12">
-                    <div class="flex justify-between items-end mb-6">
-                        <label class="font-bold text-gray-400 uppercase text-[10px] md:text-xs tracking-widest">Monthly Spend</label>
-                        <div class="text-2xl md:text-4xl font-black text-[#111]"><span id="spend-value">1,500,000</span>원</div>
-                    </div>
-                    <input type="range" id="spend-slider" min="0" max="10000000" step="100000" value="1500000" class="cursor-pointer">
+            
+            <div id="horizontal-scroll-content" class="horizontal-content">
+                <!-- Standardized cards for 01-04 -->
+                <div class="horizontal-card">
+                    <span class="number-indicator">01</span>
+                    <h4>Private <br>Concierge</h4>
+                    <p>당신의 라이프스타일을 완벽하게 큐레이션하는 <br>전담 데스크 서비스가 상시 대기합니다.</p>
+                    <div class="card-accent-bar"></div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-                    <div class="bg-[#f9f9fb] p-8 rounded-3xl border border-gray-50">
-                        <div class="text-[10px] md:text-xs font-bold text-blue-600 mb-2 uppercase tracking-widest">Monthly Reward</div>
-                        <div class="text-xl md:text-3xl font-bold mb-1 md:mb-2 text-[#111]"><span id="earn-value">30,000</span>원</div>
-                        <p class="text-[10px] md:text-xs text-gray-400">2% 무제한 캐시백 기준</p>
+                <div class="horizontal-card">
+                    <span class="number-indicator">02</span>
+                    <h4>Network <br>Curation</h4>
+                    <p>선별된 프리미엄 다이닝과 <br>글로벌 호텔 멤버십 혜택을 제공합니다.</p>
+                    <div class="card-accent-bar"></div>
+                </div>
+                <div class="horizontal-card">
+                    <span class="number-indicator">03</span>
+                    <h4>Digital <br>Ecosystem</h4>
+                    <p>실물 카드의 한계를 넘는 <br>독보적인 디지털 멤버십 증명을 연결합니다.</p>
+                    <div class="card-accent-bar"></div>
+                </div>
+                <div class="horizontal-card">
+                    <span class="number-indicator">04</span>
+                    <h4>Limitless <br>Freedom</h4>
+                    <p>고정된 수치를 넘어 당신의 가치에 부합하는 <br>무한한 자유와 여정을 제안합니다.</p>
+                    <div class="card-accent-bar"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reward Simulator -->
+    <section id="calculator-trigger" class="simulator-scroll-parent">
+        <div class="simulator-sticky-box">
+            <div class="w-full px-6">
+                <div class="max-w-7xl mx-auto text-left mb-12">
+                    <h2 class="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-[#111]">Reward Simulator.</h2>
+                    <p class="text-gray-400 text-sm md:text-base font-medium">사용 금액에 따른 월간 리워드 수치를 확인하십시오.</p>
+                </div>
+                <div class="max-w-7xl mx-auto bg-white/60 backdrop-blur-md rounded-[40px] p-8 md:p-12 shadow-sm border border-white overflow-hidden">
+                    <div class="w-full">
+                        <div class="flex justify-between items-end mb-4">
+                            <label class="font-bold text-gray-400 uppercase text-[10px] md:text-xs tracking-widest">Monthly Spend</label>
+                            <div class="text-2xl md:text-4xl font-black text-[#111]"><span id="spend-value">0</span>원</div>
+                        </div>
+                        <div class="slider-wrapper"><input type="range" id="spend-slider" min="0" max="10000000" step="100000" value="0"></div>
                     </div>
-                    <div class="bg-[#f9f9fb] p-8 rounded-3xl border border-gray-50">
-                        <div class="text-[10px] md:text-xs font-bold text-purple-600 mb-2 uppercase tracking-widest">Annual Total</div>
-                        <div class="text-xl md:text-3xl font-bold mb-1 md:mb-2 text-[#111]"><span id="annual-value">360,000</span>원</div>
-                        <p class="text-[10px] md:text-xs text-gray-400">1년 기준 리워드 합계</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mt-4">
+                        <div class="bg-white/80 p-8 rounded-3xl border border-gray-100">
+                            <div class="text-[10px] md:text-xs font-bold mb-2 uppercase tracking-widest text-sky-500">Monthly Reward</div>
+                            <div class="text-xl md:text-3xl font-bold mb-1 md:mb-2 text-[#111]"><span id="earn-value">0</span>원</div>
+                        </div>
+                        <div class="bg-white/80 p-8 rounded-3xl border border-gray-100">
+                            <div class="text-[10px] md:text-xs font-bold mb-2 uppercase tracking-widest text-sky-500">Annual Total</div>
+                            <div class="text-xl md:text-3xl font-bold mb-1 md:mb-2 text-[#111]"><span id="annual-value">0</span>원</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Closing Section -->
-    <section class="py-32 md:py-48 px-6 bg-white border-t border-gray-100 text-center">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl md:text-6xl font-black tracking-tighter text-[#111] mb-8">도구의 가치는 <br class="md:hidden">결과로 증명됩니다.</h2>
-            <p class="text-gray-400 font-medium tracking-widest uppercase text-[10px] md:text-xs mb-16">Essential utility for your lifestyle.</p>
-            <button class="px-12 py-5 bg-black text-white rounded-full font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-2xl tracking-widest uppercase">
-                Select Your Element
-            </button>
+    <!-- [FIXED] Closing Section with AURA REVEAL -->
+    <section id="closing-trigger" class="closing-scroll-parent">
+        <div class="closing-sticky-box">
+            <div id="closing-inner" class="closing-inner-content max-w-4xl mx-auto px-6">
+                <h2 class="closing-title text-4xl md:text-7xl font-black tracking-tighter text-[#111] mb-12 leading-[1.1]">도구의 가치는 <br>결과로 증명됩니다.</h2>
+                <p class="text-gray-400 font-medium tracking-[0.3em] uppercase text-[11px] md:text-xs mb-16">Essential utility for your refined lifestyle.</p>
+                
+                <!-- [NEW] Aura Expand Button -->
+                <button class="aura-button" id="main-cta-btn">
+                    <div class="aura-glow-layer" id="btn-glow-layer"></div>
+                    <span class="aura-button-text" id="btn-text-content">Select Your Element</span>
+                </button>
+            </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-20 px-6 bg-white border-t border-gray-100">
-        <div class="max-w-7xl mx-auto flex flex-col items-start text-[9px] md:text-[10px] text-gray-400 uppercase tracking-tighter text-left">
-            <div class="text-xl font-black italic mb-6 text-black">ELEMENT.</div>
-            <p class="leading-relaxed max-w-xs uppercase tracking-tighter">
-                준법감시인 심의필 제2026-1024호 <br>
-                카드 이용 전 상품설명서 및 약관을 확인하시기 바랍니다. <br>
-                연체이자율: 회원별, 이용회원별 약정금리 + 연 3% (연 20% 이내)
-            </p>
-        </div>
+    <footer class="py-20 px-6 bg-white border-t border-gray-100 text-center">
+        <div class="text-xl font-black italic text-gray-200 mb-6">ELEMENT.</div>
+        <p class="max-w-md mx-auto text-[10px] text-gray-400 uppercase tracking-widest leading-relaxed text-center">
+            준법감시인 심의필 제2026-1024호 <br>
+            카드 이용 전 상품설명서 및 약관을 확인하시기 바랍니다. <br>
+            연체이자율: 회원별 약정금리 + 연 3% (최대 20%)
+        </p>
     </footer>
 
     <script>
-        // 1. Accordion Logic
         function toggleAccordion(element) {
-            const isActive = element.classList.contains('active');
             element.classList.toggle('active');
-            element.querySelector('.btn-text').innerText = isActive ? 'Details' : 'Close';
+            const btnText = element.querySelector('.btn-text');
+            btnText.innerText = element.classList.contains('active') ? 'Close' : 'Details';
         }
 
-        // 2. Edition Configuration
         const editions = {
-            silver: { name: 'Anodized Liquid Silver', bg: 'linear-gradient(135deg, #cbd5e1 0%, #f8fafc 50%, #94a3b8 100%)', text: '#111827', chip: 'linear-gradient(135deg, #94a3b8 0%, #475569 100%)' },
-            gold: { name: '24K Brushed Gold Edition', bg: 'linear-gradient(135deg, #fde68a 0%, #fbbf24 50%, #b45309 100%)', text: '#451a03', chip: 'linear-gradient(135deg, #ffffff 0%, #fde68a 100%)' },
-            black: { name: 'Titanium Midnight Black', bg: 'linear-gradient(135deg, #0a0a0a 0%, #262626 50%, #050505 100%)', text: '#ffffff', chip: 'linear-gradient(135deg, #fef08a 0%, #ca8a04 100%)' }
+            silver: { bg: 'linear-gradient(135deg, #cbd5e1 0%, #f8fafc 50%, #94a3b8 100%)', chip: 'linear-gradient(135deg, #94a3b8 0%, #475569 100%)', glare: 'rgba(255,255,255,0.9)', pattern: 'rgba(0,0,0,0.06)', mode: 'multiply', text: '#111827' },
+            gold: { bg: 'linear-gradient(135deg, #fde68a 0%, #fbbf24 50%, #b45309 100%)', chip: 'linear-gradient(135deg, #ffffff 0%, #fde68a 100%)', glare: 'rgba(255,248,220,0.7)', pattern: 'rgba(69,26,3,0.1)', mode: 'multiply', text: '#451a03' },
+            black: { bg: 'linear-gradient(135deg, #0a0a0a 0%, #262626 50%, #050505 100%)', chip: 'linear-gradient(135deg, #334155 0%, #020617 100%)', glare: 'rgba(125, 211, 252, 0.8)', pattern: 'rgba(125, 211, 252, 0.3)', mode: 'screen', text: '#f1f5f9' }
         };
 
         function setEdition(type) {
             const config = editions[type];
             const card = document.getElementById('main-card');
             const chip = document.getElementById('card-chip');
-            const nameDisplay = document.getElementById('edition-name');
-            card.style.background = config.bg; 
-            card.style.color = config.text;
+            card.style.background = config.bg; card.style.color = config.text;
             chip.style.background = config.chip; 
-            nameDisplay.innerText = config.name;
+            card.style.setProperty('--pattern-color', config.pattern);
+            card.style.setProperty('--pattern-mode', config.mode);
             document.querySelectorAll('.edition-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`btn-${type}`).classList.add('active');
+            document.getElementById('edition-name').innerText = type.charAt(0).toUpperCase() + type.slice(1) + " Edition";
         }
 
-        // 3. [GLARE RESTORATION]
+        // [LERP ENGINE]
+        const scrollTrack = document.getElementById('horizontal-scroll-content');
+        const scrollSection = document.getElementById('exclusive');
+        const parallaxBg = document.getElementById('parallax-dots');
+        const calculatorTrigger = document.getElementById('calculator-trigger');
+        const spendSlider = document.getElementById('spend-slider');
+        const closingTrigger = document.getElementById('closing-trigger');
+        const closingInner = document.getElementById('closing-inner');
+        const btnGlow = document.getElementById('btn-glow-layer');
+        const ctaBtn = document.getElementById('main-cta-btn');
+        const btnTextContent = document.getElementById('btn-text-content');
+
+        // [FIX] initialPeek logic: 1/3 of card width remains visible from the right
+        const calcInitialPeek = () => {
+            const cardW = Math.min(window.innerWidth * 0.8, 580);
+            return window.innerWidth - (cardW / 3);
+        }
+        let initialPeek = calcInitialPeek();
+        window.addEventListener('resize', () => { initialPeek = calcInitialPeek(); });
+
+        let currentX = initialPeek, targetX = initialPeek;
+        let currentSpend = 0, targetSpend = 0;
+        let currentCloseOpacity = 0, targetCloseOpacity = 0;
+        let currentCloseY = 60, targetCloseY = 60;
+        let currentAura = 0, targetAura = 0;
+
+        const maxSpend = 10000000;
+        const lerp = (start, end, factor) => start + (end - start) * factor;
+
+        window.addEventListener('scroll', () => {
+            const viewHeight = window.innerHeight;
+
+            // 1. Horizontal Scroll
+            const rect = scrollSection.getBoundingClientRect();
+            if (rect.top <= 0 && rect.top >= -(rect.height - viewHeight)) {
+                const progress = Math.abs(rect.top) / (rect.height - viewHeight);
+                const totalRange = scrollTrack.scrollWidth + initialPeek;
+                targetX = initialPeek - (progress * totalRange);
+                parallaxBg.style.transform = `translateX(${(targetX - initialPeek) * 0.1}px)`;
+            }
+
+            // 2. Reward Simulator
+            const simRect = calculatorTrigger.getBoundingClientRect();
+            if (simRect.top <= 0 && simRect.top >= -(simRect.height - viewHeight)) {
+                const progress = Math.abs(simRect.top) / (simRect.height - viewHeight);
+                targetSpend = progress * maxSpend;
+            }
+
+            // 3. Closing Section (Aura Expand Action)
+            const closeRect = closingTrigger.getBoundingClientRect();
+            if (closeRect.top <= 0 && closeRect.top >= -(closeRect.height - viewHeight)) {
+                const progress = Math.abs(closeRect.top) / (closeRect.height - viewHeight);
+                
+                // Text Reveal
+                const textProgress = Math.min(1, progress * 4);
+                targetCloseOpacity = textProgress;
+                targetCloseY = 60 - (textProgress * 60);
+                
+                // Aura Animation (Starts after text reveal)
+                targetAura = Math.max(0, Math.min(100, ((progress - 0.25) / 0.75) * 100));
+            }
+        });
+
+        function animate() {
+            currentX = lerp(currentX, targetX, 0.08);
+            scrollTrack.style.transform = `translateX(${currentX}px)`;
+
+            currentSpend = lerp(currentSpend, targetSpend, 0.1);
+            const roundedSpend = Math.round(currentSpend / 10000) * 10000;
+            spendSlider.value = roundedSpend;
+            document.getElementById('spend-value').innerText = roundedSpend.toLocaleString();
+            document.getElementById('earn-value').innerText = Math.floor(roundedSpend * 0.02).toLocaleString();
+            document.getElementById('annual-value').innerText = Math.floor(roundedSpend * 0.02 * 12).toLocaleString();
+
+            currentCloseOpacity = lerp(currentCloseOpacity, targetCloseOpacity, 0.1);
+            currentCloseY = lerp(currentCloseY, targetCloseY, 0.1);
+            closingInner.style.opacity = currentCloseOpacity;
+            closingInner.style.transform = `translateY(${currentCloseY}px) scale(${0.95 + currentCloseOpacity * 0.05})`;
+
+            // [NEW] Aura Expand Animation
+            currentAura = lerp(currentAura, targetAura, 0.1);
+            btnGlow.style.width = `${currentAura * 2.5}%`;
+            btnGlow.style.height = `${currentAura * 600}%`; // Oval effect
+            btnGlow.style.opacity = currentAura / 100;
+            btnGlow.style.filter = `blur(${20 - (currentAura/10)}px)`;
+
+            if (currentAura > 95) {
+                ctaBtn.style.background = "var(--key-color-dark)";
+                ctaBtn.style.borderColor = "var(--key-color-dark)";
+                btnTextContent.style.color = "#000";
+            } else {
+                ctaBtn.style.background = "transparent";
+                ctaBtn.style.borderColor = "#000";
+                btnTextContent.style.color = "#111";
+            }
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 3D Card Effect
         const card = document.getElementById('main-card');
         const trigger = document.getElementById('card-trigger');
-        const glare = document.getElementById('glare');
-        const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-        if (!isTouch) {
-            trigger.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect(); 
-                const x = e.clientX - rect.left; 
-                const y = e.clientY - rect.top;
-                
-                const px = x / rect.width; 
-                const py = y / rect.height;
-                
-                // Tilt logic
-                const rotateX = (0.5 - py) * 20;
-                const rotateY = (px - 0.5) * 20;
-                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                
-                // Glare coordinate math
-                const tx = x - (rect.width / 2);
-                const ty = y - (rect.height / 2);
-                const rot = (px * 60) + 15; // 15deg ~ 75deg range for dynamic specular
-                
-                card.style.setProperty('--tx', tx);
-                card.style.setProperty('--ty', ty);
-                card.style.setProperty('--rotate', `${rot}deg`);
-                glare.style.opacity = '1';
-            });
-            
-            trigger.addEventListener('mouseleave', () => {
-                card.style.transform = `rotateX(0deg) rotateY(0deg)`;
-                glare.style.opacity = '0';
-            });
-        }
-
-        // 4. Calculator Logic
-        const slider = document.getElementById('spend-slider');
-        slider.addEventListener('input', (e) => {
-            const val = parseInt(e.target.value);
-            document.getElementById('spend-value').innerText = val.toLocaleString();
-            document.getElementById('earn-value').innerText = (val * 0.02).toLocaleString();
-            document.getElementById('annual-value').innerText = (val * 0.02 * 12).toLocaleString();
+        trigger.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect(); 
+            const x = e.clientX - rect.left, y = e.clientY - rect.top;
+            const px = x / rect.width, py = y / rect.height;
+            card.style.transform = `rotateX(${(0.5 - py) * 20}deg) rotateY(${(px - 0.5) * 20}deg)`;
+            card.style.setProperty('--tx', x - (rect.width / 2));
+            card.style.setProperty('--ty', y - (rect.height / 2));
+            card.style.setProperty('--rotate', `${(py * 80) + (px * 20)}deg`);
+            card.style.setProperty('--glare-opacity', '1');
+        });
+        trigger.addEventListener('mouseleave', () => {
+            card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            card.style.setProperty('--glare-opacity', '0');
         });
     </script>
 </body>
